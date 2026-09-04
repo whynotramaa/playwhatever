@@ -139,6 +139,9 @@ export const create = mutation({
   returns: v.any(),
   handler: async (ctx, args) => {
     const user = await currentUser(ctx);
+    // Guests play, accounts host. The room outlives the tab it was made in, so
+    // it needs an owner who can come back to it.
+    if (user.isAnonymous) throw new ConvexError("Sign in to host a room. Guests can still join with a code.");
     const game = await ctx.db
       .query("games")
       .withIndex("by_slug", (q) => q.eq("slug", args.gameSlug))

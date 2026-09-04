@@ -1,18 +1,35 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { api } from "../../../../../convex/_generated/api";
 import { AuthShell } from "@/components/AuthShell";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { GuestSessionGate } from "@/components/GuestSessionGate";
+import { authClient } from "@/lib/auth-client";
 import { errorText } from "@/lib/errors";
 import { settingsFor } from "@/lib/games";
 
 export function CreateRoomForm({ slug }: { slug: string }) {
-  return <GuestSessionGate><CreateRoom slug={slug} /></GuestSessionGate>;
+  const { data: session, isPending } = authClient.useSession();
+  const isAccount = Boolean(session?.user && !(session.user as { isAnonymous?: boolean }).isAnonymous);
+
+  if (isPending) {
+    return <AuthShell title="One moment"><div className="auth-skeleton" /></AuthShell>;
+  }
+  if (!isAccount) {
+    return (
+      <AuthShell
+        title="Sign in to host"
+        subtitle="A room outlives the tab you made it in, so hosting needs an account. Joining one does not."
+      >
+        <Link href="/login" className="w-full"><Button variant="primary" className="w-full">Sign in</Button></Link>
+      </AuthShell>
+    );
+  }
+  return <CreateRoom slug={slug} />;
 }
 
 function CreateRoom({ slug }: { slug: string }) {

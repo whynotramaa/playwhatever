@@ -17,7 +17,9 @@ export default async function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#181824",
+          // No background: the mark sits on whatever the browser paints behind
+          // the tab, light or dark. The apple icon keeps its plate, because iOS
+          // composites a transparent home-screen icon onto black anyway.
           color: "#ff6652",
           fontFamily: "Display",
           fontSize: 76,

@@ -9,7 +9,7 @@ import { Header } from "@/components/Header";
 import { Button } from "@/components/Button";
 import { GameCard } from "@/components/Card";
 import { Input } from "@/components/Input";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, Search, Trophy } from "lucide-react";
 import { ROOM_CODE_LENGTH, normalizeRoomCode, regionLabel } from "@/lib/games";
 
 type Game = {
@@ -33,10 +33,20 @@ export default function Home() {
   const router = useRouter();
 
   // Six games. Filtering the list the client already has beats a search index.
-  const categories = useMemo(
-    () => [...new Set((games ?? []).flatMap((game) => game.categories))],
-    [games]
-  );
+  // A tag every game carries narrows nothing, so it never becomes a chip. Four
+  // is what fits on a phone before the row wraps.
+  const categories = useMemo(() => {
+    const shelf = games ?? [];
+    const counts = new Map<string, number>();
+    for (const game of shelf) {
+      for (const name of game.categories) counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+    return [...counts]
+      .filter(([, count]) => count < shelf.length)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4)
+      .map(([name]) => name);
+  }, [games]);
   const goToRoom = (event: FormEvent) => {
     event.preventDefault();
     router.push(`/join/${code}`);
@@ -151,7 +161,7 @@ export default function Home() {
 function Daily() {
   return (
     <Link href="/daily" className="daily-strip md:col-span-3">
-      <span className="daily-mark" aria-hidden="true">*</span>
+      <span className="daily-mark" aria-hidden="true"><Trophy strokeWidth={1.5} /></span>
       <span className="daily-copy">
         <span className="label">Player of the day</span>
         <span className="card-title text-lg font-normal">Same IPL player for everyone</span>

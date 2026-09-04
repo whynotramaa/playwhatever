@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import Link from "next/link";
+import { BackLink } from "@/components/BackLink";
 
 /**
  * The single-column layout shared by every auth screen. One centered stack,
@@ -20,9 +21,12 @@ export function AuthShell({
   return (
     <main className="auth-shell">
       <div className="auth-column">
-        <Link href="/" className="auth-brand" aria-label="PlayWhatever home">
-          <span className="auth-brand-mark" aria-hidden="true">*</span>
-        </Link>
+        <div className="auth-top">
+          <Link href="/" className="auth-brand" aria-label="PlayWhatever home">
+            <span className="auth-brand-mark" aria-hidden="true">*</span>
+          </Link>
+          <BackLink />
+        </div>
 
         <header className="auth-head">
           <h1 className="page-title">{title}</h1>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Trophy } from "lucide-react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -85,7 +86,7 @@ export function DailyScreen() {
   return (
     <main className="auth-shell">
       <div className="auth-column ipl-game">
-        <span className="auth-brand-mark" aria-hidden="true">*</span>
+        <span className="daily-mark" aria-hidden="true"><Trophy strokeWidth={1.5} /></span>
         <header className="auth-head">
           <p className="label">Player of the day · {today.dateKey}</p>
           <h1 className="page-title">

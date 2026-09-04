@@ -1,0 +1,2407 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #181824;
+  --color-bg-deep: #101016;
+  --color-bg-soft: #1f1f2e;
+  --color-surface: #232334;
+  --color-surface-raised: #2c2c40;
+  --color-surface-soft: #34344a;
+  --color-border: rgba(255, 255, 255, 0.10);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-text: #f7f7ff;
+  --color-text-secondary: #c5c4d1;
+  --color-text-muted: #8c8b99;
+  --color-text-disabled: #5d5c68;
+  --backdrop: rgba(0, 0, 0, 0.66);
+  --grain: 0.035;
+  --shadow-card: 0 12px 28px rgba(0, 0, 0, 0.28);
+
+  --color-coral: #ff6652;
+  --color-coral-hover: #ff7866;
+  --color-coral-pressed: #ed5543;
+  --color-coral-soft: #ffdfd9;
+  --color-yellow: #f4e900;
+  --color-yellow-soft: #fff36a;
+  --color-yellow-shadow: #c9be00;
+  --color-yellow-ink: #363300;
+  --color-success: #70d6a0;
+  --color-danger: #ff6d73;
+  --color-info: #a8baff;
+
+  /* Artifact paper. Section 3 says components consume tokens; these are the
+     stocks the printed objects are set on, and the shadow section 13 specifies
+     for all of them. */
+  --shadow-artifact: 0 12px 28px rgba(0, 0, 0, 0.16);
+  --paper-post: #f7ecd7;
+  --paper-post-2: #efdcbd;
+  --paper-post-ink: #4a2c12;
+  --paper-post-accent: #e2761f;
+  --paper-secret: #f3ddd6;
+  --paper-secret-2: #e8c6bc;
+  --paper-secret-ink: #4b1a14;
+  --paper-secret-accent: #b5342a;
+  --paper-win: #f9efd2;
+  --paper-win-2: #f0dfae;
+  --paper-win-accent: #1d7a4c;
+  --paper-cinema: #f4e7cd;
+  --paper-cinema-2: #e9d7b4;
+  --paper-cinema-ink: #6d1a15;
+
+  --tint-lavender: #ded4ff;
+  --tint-sky: #d4edff;
+  --tint-mint: #d9f3e4;
+  --tint-peach: #ffe0d4;
+
+  --font-ui: var(--font-poppins), var(--font-noto-devanagari), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-zarathustra), var(--font-poppins), var(--font-noto-devanagari), sans-serif;
+  --font-hand: "Bradley Hand", "Comic Sans MS", cursive;
+
+  --radius-small: 8px;
+  --radius-control: 14px;
+  --radius-card: 18px;
+  --radius-panel: 24px;
+  --radius-pill: 999px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+[data-theme="light"] {
+  --color-bg: #fafaf8;
+  --color-bg-deep: #f1f0f4;
+  --color-bg-soft: #f1f0f4;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-surface-soft: #f0eff5;
+  --color-border: rgba(20, 20, 30, 0.10);
+  --color-border-strong: rgba(20, 20, 30, 0.18);
+  --color-text: #171727;
+  --color-text-secondary: #686778;
+  --color-text-muted: #9c9baa;
+  --color-text-disabled: #c0bfca;
+  --backdrop: rgba(20, 20, 30, 0.36);
+  --grain: 0.02;
+  --shadow-card: 0 12px 28px rgba(20, 20, 30, 0.10);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 104px;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font: 400 16px/1.45 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 220ms var(--ease-out), color 220ms var(--ease-out);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  min-height: 80px;
+  gap: 24px;
+  padding: 16px 40px;
+}
+
+/* Pushes the header's right-hand controls away from the logo. */
+.topbar .spacer {
+  flex: 1;
+}
+
+/* The dot between metadata values on a game card. */
+.sep {
+  color: var(--color-text-disabled);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-control);
+}
+
+.logo:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+/* The mark is one asterisk and nothing else: no tile, no border, no plate.
+   An asterisk sits in the upper half of its em box, so it gets nudged down
+   onto the wordmark's optical centre rather than floating above it. */
+.logo-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 40px;
+  color: var(--color-coral);
+  font: 400 46px/1 var(--font-display);
+  font-synthesis: none;
+  transform: translateY(0.17em);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+button.tag {
+  cursor: pointer;
+  background: transparent;
+  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out),
+              color 160ms var(--ease-out), transform 140ms var(--ease-out);
+}
+
+button.tag:active {
+  transform: scale(0.96);
+}
+
+button.tag:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+button.tag[data-selected] {
+  background: var(--color-coral);
+  border-color: var(--color-coral);
+  color: #fff;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+code, .mono {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* Zarathustra headings rule from DESIGN.md: weight 400, no synthesis */
+.display, .page-title, .section-title, .card-title, .heading-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+.heading-intl {
+  font-family: var(--font-ui);
+  font-weight: 600;
+}
+
+.display {
+  font-size: 56px;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.page-title {
+  font-size: 32px;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.section-title {
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.card-title {
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.body {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.small {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.label {
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.code-type {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.secondary {
+  color: var(--color-text-secondary);
+}
+
+.hand {
+  font-family: var(--font-hand);
+  color: var(--color-coral);
+  font-size: 18px;
+}
+
+/* Buttons */
+.btn {
+  --btn-bg: var(--color-surface-raised);
+  --btn-fg: var(--color-text);
+  --btn-border: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius-control);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font: 600 15px/1 var(--font-ui);
+  cursor: pointer;
+  position: relative;
+  transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out),
+              border-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+.btn-primary {
+  --btn-bg: var(--color-coral);
+  --btn-fg: #fff;
+}
+
+.btn-secondary {
+  --btn-bg: var(--color-surface-raised);
+}
+
+.btn-outline {
+  --btn-bg: transparent;
+  --btn-border: var(--color-border-strong);
+}
+
+.btn-yellow {
+  --btn-bg: var(--color-yellow);
+  --btn-fg: var(--color-yellow-ink);
+}
+
+.btn-tertiary {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-text-secondary);
+  height: 44px;
+  padding: 0 10px;
+}
+
+.btn-small {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 14px;
+  border-radius: var(--radius-small);
+}
+
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: var(--radius-control);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+@media (hover: hover) {
+  .btn-primary:hover {
+    --btn-bg: var(--color-coral-hover);
+  }
+  .btn-secondary:hover {
+    --btn-bg: var(--color-surface-soft);
+  }
+  .btn-outline:hover {
+    --btn-border: var(--color-text-muted);
+  }
+  .btn-yellow:hover {
+    --btn-bg: var(--color-yellow-soft);
+  }
+  .btn-tertiary:hover {
+    --btn-fg: var(--color-text);
+    --btn-bg: var(--color-surface);
+  }
+  .btn-icon:hover {
+    --btn-bg: var(--color-surface-soft);
+  }
+}
+
+.btn.is-pressed {
+  --btn-bg: var(--color-coral-pressed);
+  transform: scale(0.97);
+}
+
+.btn[disabled] {
+  cursor: not-allowed;
+  transform: none;
+  --btn-bg: var(--color-surface);
+  --btn-fg: var(--color-text-disabled);
+  --btn-border: var(--color-border);
+}
+
+.btn.is-loading {
+  pointer-events: none;
+}
+
+.btn.is-loading .btn-label {
+  visibility: hidden;
+}
+
+.btn.is-loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Inputs */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.input, .search input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  font: 400 16px/1 var(--font-ui);
+  transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.input::placeholder, .search input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input:focus, .search input:focus {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search svg {
+  position: absolute;
+  left: 16px;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.search input {
+  padding-left: 44px;
+}
+
+.input[disabled] {
+  color: var(--color-text-disabled);
+  background: var(--color-bg-soft);
+}
+
+.input.is-error {
+  border-color: var(--color-danger);
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.hint.error {
+  color: var(--color-danger);
+}
+
+/* Cards & Panels */
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  padding: 24px;
+}
+
+.panel-flat {
+  background: var(--color-bg-soft);
+}
+
+/* Not every panel is the same panel. A tone only tints the label, which is
+   enough to tell two stacked cards apart. It does not touch the edge: a
+   coloured rule along the top of every card reads as a stack of alerts. */
+.panel[data-tone] > .label:first-child,
+.panel[data-tone] .flex > .label {
+  color: var(--panel-tone);
+}
+
+.panel[data-tone="lavender"] { --panel-tone: var(--tint-lavender); }
+.panel[data-tone="sky"] { --panel-tone: var(--tint-sky); }
+.panel[data-tone="mint"] { --panel-tone: var(--tint-mint); }
+.panel[data-tone="peach"] { --panel-tone: var(--tint-peach); }
+
+.panel {
+  transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .panel:hover {
+    border-color: var(--color-border-strong);
+  }
+}
+
+/* Game card
+   Built to DESIGN.md section 8 rather than to a poster idea: 18px radius, 20px
+   padding, 18px title, and the hover it specifies. The artwork is the card's
+   one tinted visual block; the shell around it stays on surface tokens, because
+   a grid of six cards each printed on its own accent breaks the two-accents
+   rule in section 3.
+
+   The crop is square. Section 16 asks for a consistent crop per card type and
+   leaves the ratio open, and square is what fits the shelf without the card
+   running past the fold.
+
+   Both text rails are clamped to a fixed height. That is the whole alignment
+   fix: a one-line title on one card can no longer lift its meta row above its
+   neighbour's. */
+.game-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  transition: transform 180ms var(--ease-out), background-color 180ms var(--ease-out),
+              border-color 180ms var(--ease-out);
+}
+
+.game-card:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+.game-card:active {
+  transform: scale(0.985);
+}
+
+.game-card-art {
+  position: relative;
+  display: block;
+  /* The number that lands the whole card at three quarters of the height it
+     had as a full-bleed poster, which is what it was asked to lose. */
+  aspect-ratio: 9 / 8;
+  overflow: hidden;
+  background: var(--color-bg-deep);
+}
+
+.game-card-art img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  /* Faces and titles sit in the upper third of this artwork. */
+  object-position: center 30%;
+  transition: transform 420ms var(--ease-out);
+}
+
+.game-card-sheet {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.game-card .card-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  min-height: calc(18px * 1.2);
+}
+
+.game-card .desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.35;
+  min-height: calc(14px * 1.35 * 2);
+  color: var(--color-text-secondary);
+}
+
+.game-card .meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.game-card .arrow {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  transition: transform 180ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .game-card:hover {
+    background: var(--color-surface-raised);
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+  .game-card:hover .arrow {
+    transform: translateX(3px);
+  }
+  .game-card:hover .game-card-art img {
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-card,
+  .game-card .arrow,
+  .game-card-art img {
+    transition: none;
+  }
+  .game-card:hover {
+    transform: none;
+  }
+  .game-card:hover .game-card-art img {
+    transform: none;
+  }
+}
+
+.game-detail-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(16, 16, 22, 0.02) 20%, rgba(16, 16, 22, 0.42) 60%, var(--game-card-bg, var(--color-bg-deep)) 100%);
+  pointer-events: none;
+}
+
+.game-detail-art img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 28%;
+  transition: transform 420ms var(--ease-out), filter 220ms var(--ease-out);
+}
+
+.game-detail-art {
+  --game-card-bg: var(--color-bg-deep);
+  position: relative;
+  aspect-ratio: 16 / 10;
+  height: auto;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  isolation: isolate;
+}
+
+[data-theme="light"] .game-detail-art::after {
+  background: none;
+}
+
+[data-theme="light"] .game-detail-art img {
+  filter: saturate(0.9) contrast(1.03);
+}
+
+[data-theme="light"] .game-detail-art {
+  --game-card-bg: #fffaf1;
+  border: 1px solid rgba(54, 51, 0, 0.14);
+  box-shadow: 0 10px 24px rgba(54, 51, 0, 0.08);
+}
+
+/* Ticket */
+/* Room invitation
+   One layout, always stacked. The ticket only ever appears inside the 420px
+   room column, so the old side-by-side variant was unreachable on a phone and
+   cramped on a laptop; it is gone rather than maintained.
+
+   The tear is geometry, not a dashed border. Two notches are punched out of
+   the left and right edges with a mask, so the page itself shows through them,
+   and the perforation runs between them as actual dots. `--tear` is the
+   distance from the bottom edge and the stub is exactly that tall, which is
+   what keeps the dots and the notches on one line. */
+.ticket {
+  --tear: 132px;
+  --notch: 12px;
+  --ticket-ink: rgba(54, 51, 0, 0.5);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 520px;
+  /* Air on both sides, so the ticket reads as an object resting on the page
+     rather than one more full-width card. */
+  margin-inline: 12px;
+  background: var(--color-yellow);
+  color: var(--color-yellow-ink);
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+  -webkit-mask-image:
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--tear)), transparent 98%, #000 100%),
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--tear)), transparent 98%, #000 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--tear)), transparent 98%, #000 100%),
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--tear)), transparent 98%, #000 100%);
+  mask-composite: intersect;
+}
+
+/* Paper. Multiplied over the yellow so the card has a surface to it. */
+.ticket::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+}
+
+.ticket-body {
+  padding: 22px;
+}
+
+.ticket-inner {
+  border: 1px solid rgba(54, 51, 0, 0.28);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ticket-stub {
+  height: var(--tear);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 20px;
+  text-align: center;
+  /* The perforation. Dots along the top edge of the stub, which is the tear
+     line; the mask above cuts the ones that fall inside the notches. */
+  background-image: radial-gradient(circle at 3px 3px, var(--ticket-ink) 1.5px, transparent 1.7px);
+  background-size: 11px 6px;
+  background-repeat: repeat-x;
+  background-position: left top;
+}
+
+.ticket .brand {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ticket .line {
+  opacity: 0.78;
+}
+
+.ticket .rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ticket .rows > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ticket .leader {
+  flex: 1;
+  border-bottom: 1px dotted rgba(54, 51, 0, 0.4);
+}
+
+.ticket .room-code {
+  letter-spacing: 0.12em;
+}
+
+.ticket {
+  transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .ticket:hover {
+    transform: translateY(-3px) rotate(-0.4deg);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+  }
+}
+
+/* Modal / Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--backdrop);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  /* Exit is faster than enter: the system responding, not the user deciding. */
+  transition: opacity 160ms var(--ease-out);
+}
+
+.overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+  transition-duration: 220ms;
+}
+
+/* The overlay mounts already open, so without a starting style there is no
+   first frame to transition from and the modal would just appear. */
+@starting-style {
+  .overlay.open {
+    opacity: 0;
+  }
+}
+
+.modal {
+  width: min(520px, calc(100vw - 32px));
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 26px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+  transform: translateY(8px) scale(0.96);
+  transition: transform 170ms var(--ease-out);
+}
+
+.overlay.open .modal {
+  transform: none;
+  transition-duration: 260ms;
+}
+
+@starting-style {
+  .overlay.open .modal {
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+.modal .close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-control);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.modal .close:focus-visible,
+.sheet .close:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+.modal-head {
+  position: relative;
+}
+
+.sheet-overlay {
+  place-items: end center;
+  padding: 0;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 520px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 26px 26px 0 0;
+  padding: 24px;
+  transform: translateY(100%);
+  transition: transform 200ms var(--ease-out);
+  text-align: left;
+}
+
+.sheet-overlay.open .sheet {
+  transform: none;
+  /* Ionic's drawer curve: leaves fast, settles slowly, feels iOS-native. */
+  transition: transform 320ms var(--ease-drawer);
+}
+
+@starting-style {
+  .sheet-overlay.open .sheet {
+    transform: translateY(100%);
+  }
+}
+
+.sheet-grab {
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-border-strong);
+  margin: 0 auto 16px;
+}
+
+.traitor-game {
+  max-width: 560px;
+}
+
+/* Postcard
+   The private card a player is dealt, and the winner's card at the end. Drawn
+   as a piece of Indian post: ivory stock, a saffron and green double rule, a
+   Devanagari postmark and a franked stamp in the corner.
+
+   The chipped hole is real geometry, not a drawn rectangle. Four opaque
+   shapes are XOR'd out of an opaque base mask: a notch on each edge and the
+   punch through the middle, so the page shows through all three. `.postcard-
+   punch` is positioned with the same percentage the mask uses, which is what
+   keeps its dotted perforation sitting on the paper around the hole. */
+.postcard {
+  --postcard-paper: var(--paper-post);
+  --postcard-paper-2: var(--paper-post-2);
+  --postcard-dot: rgba(74, 44, 18, 0.12);
+  --postcard-ink: var(--paper-post-ink);
+  --postcard-accent: var(--paper-post-accent);
+  --postcard-rule: rgba(74, 44, 18, 0.34);
+  --punch-w: 128px;
+  --punch-h: 30px;
+  --notch: 12px;
+  /* Distance from the bottom edge to the tear line. Every piece of the tear
+     is measured off this one number, so the notches, the punch and the dots
+     land on the same line whatever height the card ends up. */
+  --tear: 44px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 34px 24px 76px;
+  border-radius: 10px;
+  /* The tear dots overshoot the card so the mask can trim them; without this
+     the overshoot would still count toward the page's scroll width. */
+  overflow: hidden;
+  /* Postal stock: a printed dot grid over the paper. Same dot as the tear, so
+     the card reads as one piece of stationery rather than a card with a tear
+     glued on. Variants only ever repaint --postcard-paper and --postcard-dot. */
+  background:
+    radial-gradient(circle at 2px 2px, var(--postcard-dot) 1px, transparent 1.4px) 0 0 / 13px 13px,
+    linear-gradient(158deg, var(--postcard-paper) 0%, var(--postcard-paper-2) 100%);
+  color: var(--postcard-ink);
+  text-align: center;
+  transform: rotate(-1.1deg);
+  box-shadow: var(--shadow-artifact);
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+  -webkit-mask-image:
+    linear-gradient(#000 0 0),
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--tear)), #000 98%, transparent 100%),
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--tear)), #000 98%, transparent 100%),
+    linear-gradient(#000 0 0);
+  -webkit-mask-size: 100% 100%, 100% 100%, 100% 100%, var(--punch-w) var(--punch-h);
+  -webkit-mask-position: 0 0, 0 0, 0 0, center calc(var(--punch-h) / 2 - var(--tear));
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite: xor;
+  mask-image:
+    linear-gradient(#000 0 0),
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--tear)), #000 98%, transparent 100%),
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--tear)), #000 98%, transparent 100%),
+    linear-gradient(#000 0 0);
+  mask-size: 100% 100%, 100% 100%, 100% 100%, var(--punch-w) var(--punch-h);
+  mask-position: 0 0, 0 0, 0 0, center calc(var(--punch-h) / 2 - var(--tear));
+  mask-repeat: no-repeat;
+  mask-composite: exclude;
+}
+
+/* The printed frame and the paper grain, in one layer so neither eats a click. */
+.postcard::before {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border: 1px dashed var(--postcard-rule);
+  border-radius: 4px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  opacity: 0.1;
+  mix-blend-mode: multiply;
+}
+
+/* The perforation. Dots ringing the hole the mask cut, offset outward so they
+   land on paper rather than in the gap. */
+.postcard-punch {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--tear) - var(--punch-h) / 2);
+  width: var(--punch-w);
+  height: var(--punch-h);
+  transform: translateX(-50%);
+  border-radius: 3px;
+  outline: 2px dotted var(--postcard-rule);
+  outline-offset: 4px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+/* The rest of the tear: dots running from the punch out to the notch on each
+   edge. They overshoot the card and the mask trims them, which is what makes
+   the last dot meet the notch instead of stopping short of it. */
+.postcard-punch::before,
+.postcard-punch::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 60vw;
+  height: 6px;
+  transform: translateY(-50%);
+  background-image: radial-gradient(circle at 3px 3px, var(--postcard-rule) 1.5px, transparent 1.7px);
+  background-size: 11px 6px;
+  background-repeat: repeat-x;
+}
+
+.postcard-punch::before {
+  right: calc(100% + 9px);
+  background-position: right top;
+}
+
+.postcard-punch::after {
+  left: calc(100% + 9px);
+}
+
+.postcard-stamp {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 54px;
+  padding: 9px;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--postcard-ink);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--postcard-rule);
+  /* Franked edge: the scalloped border a real stamp is torn along. */
+  -webkit-mask-image: radial-gradient(circle 3px at 3px 3px, transparent 96%, #000 100%);
+  -webkit-mask-size: 8px 8px;
+  mask-image: radial-gradient(circle 3px at 3px 3px, transparent 96%, #000 100%);
+  mask-size: 8px 8px;
+}
+
+.postcard-mark {
+  position: absolute;
+  top: 22px;
+  left: 20px;
+  font-family: var(--font-noto-devanagari), var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--postcard-accent);
+  opacity: 0.85;
+}
+
+.postcard-word {
+  margin: 6px 0 0;
+  font-size: clamp(34px, 9vw, 60px);
+  line-height: 1.05;
+  color: var(--postcard-ink);
+  word-break: break-word;
+}
+
+.postcard-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--postcard-accent);
+}
+
+.mask-mark {
+  width: 100%;
+  height: 100%;
+  color: var(--postcard-ink);
+}
+
+/* The same mask again, sized to sit on a line of text. */
+.mask-mark.is-inline {
+  width: 17px;
+  height: 17px;
+  color: currentColor;
+  /* The tag reads as one word; letter-spacing would push the face off it. */
+  margin-right: -2px;
+}
+
+/* Between two winners' names. Hand-drawn, because a comma is typesetting and
+   this card is not typeset. */
+.postcard-scribble {
+  display: inline-block;
+  vertical-align: middle;
+  width: clamp(38px, 9vw, 56px);
+  height: 0.42em;
+  margin: 0 0.28em;
+  color: var(--postcard-accent);
+  opacity: 0.75;
+  overflow: visible;
+}
+
+/* The traitor gets its own stock. A card you have to hide should not look like
+   the card everyone else is holding. */
+.postcard[data-role="traitor"] {
+  --postcard-paper: var(--paper-secret);
+  --postcard-paper-2: var(--paper-secret-2);
+  --postcard-dot: rgba(75, 26, 20, 0.13);
+  --postcard-accent: var(--paper-secret-accent);
+  --postcard-ink: var(--paper-secret-ink);
+  --postcard-rule: rgba(75, 26, 20, 0.34);
+  transform: rotate(1.4deg);
+}
+
+/* The end of the game. Big enough to be the thing you look at. */
+.postcard-winner {
+  min-height: 50vh;
+  gap: 6px;
+  padding: 44px 28px 84px;
+  /* Tear line close to the bottom edge: this card is a stub you keep. */
+  --tear: 34px;
+  --punch-w: 168px;
+  --punch-h: 26px;
+  --notch: 14px;
+  --postcard-paper: var(--paper-win);
+  --postcard-paper-2: var(--paper-win-2);
+  --postcard-accent: var(--paper-win-accent);
+  transform: rotate(-0.6deg);
+}
+
+.postcard-winner .postcard-stamp {
+  width: 76px;
+  height: 90px;
+  padding: 14px;
+  font-size: 44px;
+  top: 26px;
+  right: 26px;
+}
+
+.postcard-winner .postcard-word {
+  font-size: clamp(28px, 7vw, 46px);
+}
+
+@media (hover: hover) {
+  .postcard:hover {
+    transform: rotate(0deg) translateY(-4px);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .postcard,
+  .postcard:hover {
+    transition: none;
+  }
+}
+
+.traitor-order {
+  gap: 8px;
+}
+
+.traitor-player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.traitor-player[data-active="true"] {
+  border-color: var(--color-coral);
+  background: var(--color-surface-raised);
+}
+
+@media (hover: hover) {
+  .traitor-player:not([data-eliminated="true"]):hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface-raised);
+  }
+}
+
+.traitor-player[data-eliminated="true"] {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.traitor-reveal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 72px;
+  color: var(--color-yellow);
+}
+
+.traitor-reveal span {
+  display: block;
+  animation: rock-roll 1.2s var(--ease-out) both;
+}
+
+.traitor-reveal span:nth-child(2) { animation-delay: 80ms; }
+.traitor-reveal span:nth-child(3) { animation-delay: 160ms; }
+.traitor-reveal span:nth-child(4) { animation-delay: 240ms; }
+
+.traitor-reveal b {
+  position: absolute;
+  color: var(--color-coral);
+  animation: rock-burst 700ms 500ms var(--ease-out) both;
+}
+
+@keyframes rock-roll {
+  from { opacity: 0; transform: translateX(-26px) rotate(-180deg); }
+  to { opacity: 1; transform: translateX(0) rotate(0); }
+}
+
+@keyframes rock-burst {
+  /* Not from zero. Nothing in the world appears out of nothing. */
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1.8); }
+}
+
+/* Lists that gain items: each row arrives just behind the one above it.
+   Set --i to the row index. Decorative, never blocking. */
+.rise-in {
+  animation: rise-in 260ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The speaking clock. Linear, because it reports time rather than moving
+   through space, and --turn-delay is negative so a late joiner picks it up
+   wherever the server already is. */
+.turn-bar {
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-soft);
+  overflow: hidden;
+}
+
+.turn-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-coral);
+  transform-origin: left center;
+  animation: turn-drain var(--turn-ms, 30000ms) linear both;
+  animation-delay: var(--turn-delay, 0ms);
+}
+
+@keyframes turn-drain {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+/* Room voice
+   A room-level dock, not a game control. It stays quiet until somebody is in
+   the call: one line and one button. The mic toggle carries the only accent,
+   and the speaking ring is the only other colour the bar is allowed. */
+.room-shell {
+  /* The dock is fixed, so the page owes it the space at the bottom. */
+  padding-bottom: calc(112px + env(safe-area-inset-bottom));
+}
+
+.voice-dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 40;
+  width: min(520px, calc(100vw - 40px));
+  transform: translateX(-50%);
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.voice-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.voice-hint {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
+.voice-hint.is-error {
+  color: var(--color-danger);
+}
+
+.voice-bar .btn-outline,
+.voice-bar .btn-primary,
+.voice-bar .btn-tertiary {
+  flex: none;
+}
+
+/* The mic toggle takes the room's leftover width so it stays thumb-sized. */
+.voice-bar .btn:first-child {
+  margin-right: auto;
+}
+
+.voice-leave {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.voice-leave:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .voice-leave:hover {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    background: var(--color-surface-soft);
+  }
+}
+
+/* Who is on the call. Scrolls sideways rather than wrapping into a wall. */
+.voice-people {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.voice-people::-webkit-scrollbar {
+  display: none;
+}
+
+.voice-person {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  padding: 5px 12px 5px 5px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out), color 140ms var(--ease-out);
+}
+
+.voice-avatar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font: 600 11px/1 var(--font-ui);
+  transition: background-color 140ms var(--ease-out), color 140ms var(--ease-out);
+}
+
+.voice-name {
+  max-width: 96px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.voice-glyph {
+  width: 12px;
+  height: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Speaking. Appears and leaves, never loops: a ring that pulses forever is
+   decoration, and this one is reporting a fact. */
+.voice-person[data-speaking="true"] {
+  border-color: var(--color-success);
+  color: var(--color-text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 22%, transparent);
+}
+
+.voice-person[data-speaking="true"] .voice-avatar {
+  background: var(--color-success);
+  color: #11241b;
+}
+
+.voice-person[data-muted="true"] {
+  color: var(--color-text-muted);
+}
+
+.voice-status {
+  padding: 8px 4px 2px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voice-person,
+  .voice-avatar,
+  .voice-leave {
+    transition: none;
+  }
+}
+
+/* Player of the day
+   A strip, not a game card: the daily has no player count, no duration and no
+   room to host, so it would only read as a broken card. */
+.daily-strip {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: border-color 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+
+.daily-strip:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .daily-strip:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-1px);
+  }
+}
+
+.daily-strip:active {
+  transform: translateY(0);
+}
+
+.daily-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 44px;
+  color: var(--color-coral);
+  font: 400 56px/1 var(--font-display);
+  font-synthesis: none;
+  transform: translateY(0.17em);
+}
+
+.daily-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* IPL Guessr
+   The board is the game, so it takes the only colour on the screen. Green is
+   a match; yellow with an arrow says "not this, move that way". Nothing else
+   here is allowed to be loud. */
+.ipl-game .ipl-board {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ipl-row {
+  display: grid;
+  grid-template-columns: minmax(84px, 1.4fr) repeat(6, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.ipl-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 46px;
+  padding: 4px 2px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-surface);
+  font: 600 12px/1.15 var(--font-ui);
+  text-align: center;
+  transition: background-color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+
+.ipl-cell.is-name {
+  justify-content: flex-start;
+  padding-left: 10px;
+  font-size: 13px;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.ipl-cell[data-mark="hit"] {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: #11241b;
+}
+
+.ipl-cell[data-mark="up"],
+.ipl-cell[data-mark="down"] {
+  background: var(--color-yellow);
+  border-color: var(--color-yellow);
+  color: var(--color-yellow-ink);
+}
+
+.ipl-arrow {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+/* Column labels. Same grid, none of the weight. */
+.ipl-head .ipl-cell {
+  min-height: 0;
+  padding: 0 2px 4px;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ipl-suggest {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.ipl-suggest button {
+  min-height: 46px;
+  padding: 0 14px;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: none;
+  color: var(--color-text);
+  font: 500 15px/1.2 var(--font-ui);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.ipl-suggest button:last-child {
+  border-bottom: 0;
+}
+
+.ipl-suggest button:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: -2px;
+}
+
+@media (hover: hover) {
+  .ipl-suggest button:hover {
+    background: var(--color-surface-soft);
+  }
+}
+
+/* Everyone else, at a glance. Their guesses stay theirs; only the count moves. */
+.ipl-rivals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ipl-rival {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  transition: border-color 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+
+.ipl-rival[data-solved="true"] {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+@media (max-width: 380px) {
+  .ipl-row {
+    grid-template-columns: minmax(72px, 1.3fr) repeat(6, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .ipl-cell {
+    min-height: 42px;
+    font-size: 11px;
+  }
+
+  .ipl-cell.is-name {
+    padding-left: 7px;
+    font-size: 12px;
+  }
+}
+
+/* ==========================================================================
+   Auth screens
+   One centered column, identical structure on phone and laptop.
+   ========================================================================== */
+
+.auth-shell {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 48px 20px calc(48px + env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+
+/* Atmosphere layer, DESIGN.md section 6. Sits behind content and never
+   touches text contrast. */
+.auth-shell::before {
+  content: "";
+  position: absolute;
+  top: -22%;
+  left: 50%;
+  width: min(760px, 150vw);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, var(--color-coral) 0%, transparent 62%);
+  opacity: 0.09;
+  pointer-events: none;
+}
+
+[data-theme="light"] .auth-shell::before {
+  opacity: 0.14;
+}
+
+.auth-column {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.auth-brand {
+  display: inline-flex;
+  width: fit-content;
+  border-radius: var(--radius-control);
+}
+
+.auth-brand:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+.auth-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 44px;
+  color: var(--color-coral);
+  font: 400 56px/1 var(--font-display);
+  font-synthesis: none;
+  transform: translateY(0.17em);
+}
+
+.auth-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-sub {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  max-width: 38ch;
+}
+
+.auth-sub strong {
+  font-weight: 600;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.auth-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.setting-row > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+/* Switch
+   Pill radius, which DESIGN.md section 5 reserves for exactly this. The native
+   checkbox stays in the markup and keeps the keyboard and the form semantics;
+   it just sits invisible on top of the track it drives. */
+.switch {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.switch-track {
+  display: flex;
+  align-items: center;
+  width: 48px;
+  height: 28px;
+  padding: 3px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-soft);
+  transition: background-color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+
+.switch-knob {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 180ms var(--ease-out), background-color 180ms var(--ease-out);
+}
+
+.switch input:checked + .switch-track {
+  background: var(--color-coral);
+  border-color: var(--color-coral);
+}
+
+.switch input:checked + .switch-track .switch-knob {
+  transform: translateX(20px);
+  background: #fff;
+}
+
+/* Pressed, in both directions, so the control answers the thumb. */
+.switch input:active + .switch-track .switch-knob {
+  transform: scale(0.92);
+  transition-duration: 120ms;
+}
+
+.switch input:checked:active + .switch-track .switch-knob {
+  transform: translateX(20px) scale(0.92);
+}
+
+.switch input:focus-visible + .switch-track {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+.setting-row:active {
+  background: var(--color-surface-raised);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  padding: 4px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.auth-note {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.auth-note .is-error,
+.auth-note[data-tone="error"] {
+  color: var(--color-danger);
+}
+
+.auth-note[data-tone="ok"] {
+  color: var(--color-success);
+}
+
+/* Holds its line so the button underneath never jumps as the status flips. */
+.auth-note.is-reserved {
+  min-height: 19px;
+}
+
+.auth-foot {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.auth-row .auth-link {
+  min-height: 44px;
+}
+
+.auth-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  margin: 0 -4px;
+  border: 0;
+  background: none;
+  border-radius: var(--radius-small);
+  color: var(--color-coral);
+  font: 600 14px/1.3 var(--font-ui);
+  cursor: pointer;
+  transition: color 160ms var(--ease-out), opacity 160ms var(--ease-out);
+}
+
+.auth-link:disabled {
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.auth-link:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .auth-link:not(:disabled):hover {
+    color: var(--color-coral-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+/* Password field with its reveal toggle */
+.auth-password,
+.auth-handle {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-password .input {
+  padding-right: 52px;
+}
+
+.auth-reveal {
+  position: absolute;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.auth-reveal:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .auth-reveal:hover {
+    color: var(--color-text);
+    background: var(--color-surface-soft);
+  }
+}
+
+/* Username field: "@" prefix plus a live availability mark */
+.auth-handle .input {
+  padding-left: 34px;
+  padding-right: 44px;
+}
+
+.auth-handle-at {
+  position: absolute;
+  left: 16px;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.auth-handle-status {
+  position: absolute;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.auth-handle[data-tone="ok"] .auth-handle-status {
+  color: var(--color-success);
+}
+
+.auth-handle[data-tone="error"] .auth-handle-status {
+  color: var(--color-danger);
+}
+
+.auth-spin {
+  animation: spin 700ms linear infinite;
+}
+
+.auth-skeleton {
+  height: 48px;
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  animation: auth-pulse 1.4s var(--ease-in-out) infinite;
+}
+
+.auth-skeleton.is-short {
+  width: 60%;
+  height: 20px;
+}
+
+@keyframes auth-pulse {
+  50% { opacity: 0.55; }
+}
+
+/* --------------------------------------------------------------------------
+   OTP field
+   The six boxes are decoration. A single invisible input sits on top of them
+   and owns focus, paste, and one-time-code autofill.
+   -------------------------------------------------------------------------- */
+
+.otp {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.otp-capture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  opacity: 0;
+  color: transparent;
+  caret-color: transparent;
+  font-size: 16px; /* under 16px iOS zooms the page on focus */
+  cursor: pointer;
+}
+
+.otp-box {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1.18;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: clamp(20px, 5.5vw, 26px);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out),
+              box-shadow 160ms var(--ease-out);
+}
+
+.otp-box[data-filled] {
+  background: var(--color-surface-raised);
+  border-color: var(--color-border-strong);
+}
+
+.otp-box[data-active] {
+  border-color: var(--color-coral);
+  box-shadow: 0 0 0 1px var(--color-coral);
+}
+
+.otp-box[data-active]::after {
+  content: "";
+  width: 2px;
+  height: 38%;
+  border-radius: 2px;
+  background: var(--color-coral);
+  animation: otp-caret 1.1s steps(1) infinite;
+}
+
+.otp-digit {
+  display: block;
+  animation: otp-pop 180ms var(--ease-out) both;
+}
+
+@keyframes otp-caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes otp-pop {
+  from { opacity: 0; transform: translateY(5px) scale(0.72); }
+  to { opacity: 1; transform: none; }
+}
+
+.otp[data-status="verifying"] .otp-box {
+  opacity: 0.72;
+}
+
+.otp[data-status="error"] {
+  animation: otp-shake 400ms var(--ease-out);
+}
+
+.otp[data-status="error"] .otp-box {
+  border-color: var(--color-danger);
+  box-shadow: none;
+}
+
+@keyframes otp-shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-6px); }
+  30% { transform: translateX(5px); }
+  45% { transform: translateX(-4px); }
+  60% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+}
+
+/* 45ms stagger, inside the 30-70ms range DESIGN.md allows for lists. */
+.otp[data-status="success"] .otp-box {
+  animation: otp-ok 420ms var(--ease-out) both;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+@keyframes otp-ok {
+  0% { border-color: var(--color-border-strong); }
+  45% { border-color: var(--color-success); transform: translateY(-5px); }
+  100% { border-color: var(--color-success); transform: none; }
+}
+
+@media (min-width: 640px) {
+  .auth-shell {
+    padding: 64px 40px;
+  }
+  .otp {
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .otp,
+  .otp-box,
+  .otp-digit,
+  .auth-skeleton,
+  .auth-spin,
+  .rise-in,
+  .traitor-reveal span,
+  .traitor-reveal b {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .switch-knob {
+    transition: background-color 180ms var(--ease-out);
+  }
+  .otp-box[data-active]::after {
+    animation: none;
+  }
+  .otp[data-status="success"] .otp-box {
+    border-color: var(--color-success);
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    min-height: 64px;
+    padding: 12px 20px;
+  }
+
+  .logo-word {
+    font-size: 18px;
+  }
+}
+
+/* The wordmark is the first thing to go. Below this the header cannot hold the
+   logo, the theme toggle, Join a room and Sign in without clipping the last
+   one off the screen. */
+@media (max-width: 440px) {
+  .logo-word {
+    display: none;
+  }
+
+  .topbar {
+    gap: 8px;
+    padding: 12px 16px;
+  }
+}
+
+/* The code field and its button on one line, the button sitting on the input's
+   baseline rather than the label's. Wraps to two rows on a narrow phone. */
+.join-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.join-inline .field {
+  width: auto;
+  flex: 1 1 180px;
+  max-width: 240px;
+}
+
+.join-inline .input {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Movie ticket
+   The word, handed to the clue-givers in Dumb Charadess. Vintage cinema stub:
+   oxblood ink on aged cream, with the tear running down the side rather than
+   across the bottom so it does not read as the same object as the Traitors
+   postcard. Two notches are punched out of the top and bottom edges on the
+   tear line and the perforation runs between them. */
+.movie-ticket {
+  --ticket-paper: var(--paper-cinema);
+  --ticket-paper-2: var(--paper-cinema-2);
+  --ticket-ink: var(--paper-cinema-ink);
+  --ticket-rule: rgba(109, 26, 21, 0.4);
+  --tear: 88px;
+  --notch: 11px;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-height: 132px;
+  overflow: hidden;
+  border-radius: 8px;
+  color: var(--ticket-ink);
+  background:
+    repeating-linear-gradient(90deg, rgba(109, 26, 21, 0.05) 0 1px, transparent 1px 7px),
+    linear-gradient(150deg, var(--ticket-paper) 0%, var(--ticket-paper-2) 100%);
+  box-shadow: var(--shadow-artifact);
+  transform: rotate(-0.8deg);
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+  -webkit-mask-image:
+    linear-gradient(#000 0 0),
+    radial-gradient(circle var(--notch) at var(--tear) 0, #000 98%, transparent 100%),
+    radial-gradient(circle var(--notch) at var(--tear) 100%, #000 98%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite: xor;
+  mask-image:
+    linear-gradient(#000 0 0),
+    radial-gradient(circle var(--notch) at var(--tear) 0, #000 98%, transparent 100%),
+    radial-gradient(circle var(--notch) at var(--tear) 100%, #000 98%, transparent 100%);
+  mask-repeat: no-repeat;
+  mask-composite: exclude;
+}
+
+/* The stub, and the perforation down its right edge. */
+.movie-ticket-stub {
+  flex: 0 0 var(--tear);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  background-image: radial-gradient(circle at 3px 3px, var(--ticket-rule) 1.5px, transparent 1.7px);
+  background-size: 6px 11px;
+  background-repeat: repeat-y;
+  background-position: left top;
+}
+
+.movie-ticket-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 18px 20px;
+}
+
+.movie-ticket-brand {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+
+.movie-ticket-word {
+  margin: 2px 0;
+  font-size: clamp(26px, 6.5vw, 42px);
+  line-height: 1.06;
+  word-break: break-word;
+}
+
+.movie-ticket-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px dotted var(--ticket-rule);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+@media (hover: hover) {
+  .movie-ticket:hover {
+    transform: rotate(0deg) translateY(-3px);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .movie-ticket,
+  .movie-ticket:hover {
+    transition: none;
+  }
+}
+
+/* The guesser's attempts so far. Struck through and kept on screen, because
+   the list is the only thing stopping them typing the same word twice. */
+.guess-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guess-chip {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  text-decoration: line-through;
+}
+
+.guess-chip[data-correct="true"] {
+  border-color: var(--color-success);
+  color: var(--color-success);
+  text-decoration: none;
+}
+
+/* Tooltips
+   Pure CSS on a data attribute, because the platform's own `title` never
+   appears on touch and cannot be styled. Shows on hover and on keyboard focus,
+   and stays out of the accessibility tree: the element still needs its own
+   label. Anything with a tip must be positioned. */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 60;
+  padding: 6px 10px;
+  border-radius: var(--radius-small);
+  background: var(--color-bg-deep);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  font: 500 12px/1.3 var(--font-ui);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 140ms var(--ease-out), transform 140ms var(--ease-out);
+}
+
+[data-tip]:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* In the header there is no room above, so the tip hangs below instead. */
+.topbar [data-tip]::after {
+  top: calc(100% + 8px);
+  bottom: auto;
+  transform: translate(-50%, -4px);
+}
+
+.topbar [data-tip]:focus-visible::after {
+  transform: translate(-50%, 0);
+}
+
+@media (hover: hover) {
+  [data-tip]:hover::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tip]::after {
+    transition: none;
+  }
+}
+
+/* Hover states for the remaining interactive rows. */
+@media (hover: hover) {
+  .ipl-rival:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .voice-person:hover .voice-avatar {
+    border-color: var(--color-border-strong);
+  }
+}

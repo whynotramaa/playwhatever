@@ -427,6 +427,18 @@ code, .mono {
   transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
 }
 
+/* Keep number fields native and accessible, without the browser's mismatched spinner chrome. */
+.input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input[type="number"]::-webkit-inner-spin-button,
+.input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
 .input::placeholder, .search input::placeholder {
   color: var(--color-text-muted);
 }
@@ -1212,40 +1224,126 @@ code, .mono {
   text-decoration: line-through;
 }
 
-.traitor-reveal {
+/* The vote, played out: two rocks close on each other, hit once, and the one
+   the room picked goes over the edge. The clash lands at 620ms and everything
+   after it is the consequence, so the timings below are not independent. */
+.traitor-clash {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  min-height: 72px;
+  display: grid;
+  place-items: center;
+  min-height: 84px;
   color: var(--color-yellow);
+  font-size: 30px;
+  line-height: 1;
 }
 
-.traitor-reveal span {
-  display: block;
-  animation: rock-roll 1.2s var(--ease-out) both;
+.traitor-clash .rock {
+  grid-area: 1 / 1;
+  animation: rock-close 620ms var(--ease-in-out) both;
 }
 
-.traitor-reveal span:nth-child(2) { animation-delay: 80ms; }
-.traitor-reveal span:nth-child(3) { animation-delay: 160ms; }
-.traitor-reveal span:nth-child(4) { animation-delay: 240ms; }
+.traitor-clash .rock.is-left { --from: -84px; --rest: -19px; }
+.traitor-clash .rock.is-right { --from: 84px; --rest: 19px; }
 
-.traitor-reveal b {
-  position: absolute;
+/* Nobody out: both survive the hit and settle back, further apart than they
+   started, which is the room learning nothing. */
+.traitor-clash[data-outcome="stand"] .rock {
+  animation: rock-close 620ms var(--ease-in-out) both, rock-recoil 520ms 620ms var(--ease-out) both;
+}
+
+.traitor-clash[data-outcome="out"] .rock.is-right {
+  animation: rock-close 620ms var(--ease-in-out) both, rock-out 620ms 620ms var(--ease-out) both;
+}
+
+.traitor-clash[data-outcome="out"] .rock.is-left {
+  animation: rock-close 620ms var(--ease-in-out) both, rock-recoil 520ms 620ms var(--ease-out) both;
+}
+
+.traitor-clash .spark {
+  grid-area: 1 / 1;
   color: var(--color-coral);
-  animation: rock-burst 700ms 500ms var(--ease-out) both;
+  animation: rock-spark 420ms 560ms var(--ease-out) both;
 }
 
-@keyframes rock-roll {
-  from { opacity: 0; transform: translateX(-26px) rotate(-180deg); }
-  to { opacity: 1; transform: translateX(0) rotate(0); }
+@keyframes rock-close {
+  from { opacity: 0; transform: translateX(var(--from)) rotate(0); }
+  60% { opacity: 1; }
+  to { opacity: 1; transform: translateX(calc(var(--rest) * 0.35)) rotate(12deg); }
 }
 
-@keyframes rock-burst {
+@keyframes rock-recoil {
+  from { transform: translateX(calc(var(--rest) * 0.35)) rotate(12deg); }
+  to { transform: translateX(var(--rest)) rotate(0); }
+}
+
+@keyframes rock-out {
+  from { opacity: 1; transform: translateX(calc(var(--rest) * 0.35)) rotate(12deg); }
+  to { opacity: 0; transform: translateX(180px) translateY(-30px) rotate(220deg) scale(0.7); }
+}
+
+@keyframes rock-spark {
   /* Not from zero. Nothing in the world appears out of nothing. */
   from { opacity: 0; transform: scale(0.6); }
-  to { opacity: 1; transform: scale(1.8); }
+  60% { opacity: 1; transform: scale(1.9); }
+  to { opacity: 0; transform: scale(2.4); }
+}
+
+/* The three seconds before a round. Covers the screen because the word, the
+   name or the player is already on it. */
+.round-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  padding: 24px;
+  background: var(--color-bg);
+  transition: opacity 240ms var(--ease-out);
+}
+
+.round-intro[data-done] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.round-intro-count {
+  display: block;
+  font: 400 128px/1 var(--font-display);
+  font-synthesis: none;
+  color: var(--color-coral);
+  animation: count-pop 220ms var(--ease-out) both;
+}
+
+.round-intro-text {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-align: center;
+  /* The reel swaps letters every 55ms. Tabular figures and a fixed line stop
+     the row from twitching while it settles. */
+  font-variant-numeric: tabular-nums;
+  min-height: 1.2em;
+}
+
+@keyframes count-pop {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .traitor-clash .rock,
+  .traitor-clash .spark,
+  .round-intro-count {
+    animation: none;
+  }
+
+  .traitor-clash[data-outcome="out"] .rock.is-right {
+    opacity: 0.25;
+  }
 }
 
 /* Lists that gain items: each row arrives just behind the one above it.

@@ -11,6 +11,7 @@ import { Card } from "@/components/Card";
 import { Modal } from "@/components/Modal";
 import { GuestSessionGate } from "@/components/GuestSessionGate";
 import { GameResults } from "@/components/GameResults";
+import { RoundIntro } from "@/components/RoundIntro";
 import { MaskMark, Postcard } from "@/components/Postcard";
 import { errorText } from "@/lib/errors";
 import { useServerNow } from "@/lib/useServerNow";
@@ -96,7 +97,11 @@ function Game({ roomId, sessionId }: { roomId: Id<"rooms">; sessionId: Id<"gameS
     return (
       <main className="auth-shell">
         <div className="auth-column">
-          <div className="traitor-reveal" aria-hidden="true"><span>●</span><span>●</span><span>●</span><span>●</span><b>✦</b></div>
+          <div className="traitor-clash" data-outcome={reveal.playerId ? "out" : "stand"} aria-hidden="true">
+            <span className="rock is-left">●</span>
+            <span className="spark">✦</span>
+            <span className="rock is-right">●</span>
+          </div>
           <header className="auth-head rise-in" style={{ "--i": 4 } as CSSProperties}>
             <h1 className="page-title">{reveal.playerId ? `${reveal.displayName} was voted out.` : "Nobody goes out."}</h1>
             <p className="auth-sub">
@@ -151,6 +156,7 @@ function Game({ roomId, sessionId }: { roomId: Id<"rooms">; sessionId: Id<"gameS
 
   return (
     <main className="auth-shell">
+      <RoundIntro roundKey={`traitors-${data.session.currentRound}`} label="Dealing the names" />
       <div className="auth-column traitor-game">
         <header className="auth-head"><h1 className="page-title">Round {data.session.currentRound}</h1></header>
         <Postcard

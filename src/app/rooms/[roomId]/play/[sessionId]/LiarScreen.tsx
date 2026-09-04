@@ -10,6 +10,7 @@ import { Card } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { GuestSessionGate } from "@/components/GuestSessionGate";
 import { GameResults } from "@/components/GameResults";
+import { RoundIntro } from "@/components/RoundIntro";
 import { errorText } from "@/lib/errors";
 import { useServerNow } from "@/lib/useServerNow";
 
@@ -103,6 +104,7 @@ function Liar({ roomId, sessionId }: { roomId: Id<"rooms">; sessionId: Id<"gameS
 
   return (
     <main className="auth-shell">
+      <RoundIntro roundKey={`liar-${data.session.currentRound}`} label="Picking the question" />
       <div className="auth-column traitor-game">
         <header className="auth-head">
           <p className="label">Round {data.session.currentRound} of {data.session.totalRounds}</p>

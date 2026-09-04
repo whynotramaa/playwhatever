@@ -10,6 +10,7 @@ import { Card } from "@/components/Card";
 import { GuestSessionGate } from "@/components/GuestSessionGate";
 import { IplAnswerRow, IplBoard, IplGuessBox, type Guess } from "@/components/IplBoard";
 import { GameResults } from "@/components/GameResults";
+import { RoundIntro } from "@/components/RoundIntro";
 import { errorText } from "@/lib/errors";
 import { useServerNow } from "@/lib/useServerNow";
 
@@ -105,6 +106,7 @@ function Ipl({ roomId, sessionId }: { roomId: Id<"rooms">; sessionId: Id<"gameSe
 
   return (
     <main className="auth-shell">
+      <RoundIntro roundKey={`ipl-${data.session.currentRound}`} label="Picking the player" />
       <div className="auth-column ipl-game">
         <header className="auth-head">
           <p className="label">Round {data.session.currentRound} of {data.session.totalRounds}</p>

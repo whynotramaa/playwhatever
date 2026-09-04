@@ -63,7 +63,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-5 py-12 flex flex-col gap-16">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-5 py-12 lg:px-10 lg:py-16 flex flex-col gap-16">
         <section className="flex flex-col items-start gap-4 max-w-2xl">
           <h1 className="display">
             Fast games for your <span className="text-[var(--color-coral)]">crew</span>.

@@ -68,22 +68,25 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* Light is paper with white cards on it, not white on white. The old page was
+   #fafaf8 under #ffffff surfaces with borders at 10% alpha, so a card had
+   nothing to sit on and every edge went missing in daylight. */
 [data-theme="light"] {
-  --color-bg: #fafaf8;
-  --color-bg-deep: #f1f0f4;
-  --color-bg-soft: #f1f0f4;
+  --color-bg: #f4f1ec;
+  --color-bg-deep: #e8e4dc;
+  --color-bg-soft: #efebe4;
   --color-surface: #ffffff;
   --color-surface-raised: #ffffff;
-  --color-surface-soft: #f0eff5;
-  --color-border: rgba(20, 20, 30, 0.10);
-  --color-border-strong: rgba(20, 20, 30, 0.18);
+  --color-surface-soft: #eae6de;
+  --color-border: rgba(23, 23, 39, 0.14);
+  --color-border-strong: rgba(23, 23, 39, 0.26);
   --color-text: #171727;
-  --color-text-secondary: #686778;
-  --color-text-muted: #9c9baa;
-  --color-text-disabled: #c0bfca;
+  --color-text-secondary: #56556a;
+  --color-text-muted: #82818f;
+  --color-text-disabled: #b6b5c0;
   --backdrop: rgba(20, 20, 30, 0.36);
-  --grain: 0.02;
-  --shadow-card: 0 12px 28px rgba(20, 20, 30, 0.10);
+  --grain: 0.025;
+  --shadow-card: 0 10px 26px rgba(23, 23, 39, 0.09);
 }
 
 *, *::before, *::after {
@@ -1515,12 +1518,55 @@ code, .mono {
   color: var(--color-text-muted);
 }
 
-/* Speaking. Appears and leaves, never loops: a ring that pulses forever is
-   decoration, and this one is reporting a fact. */
+/* Speaking. The ring says who, the meter says still talking. It loops only
+   while sound is actually arriving, so it reports a fact rather than
+   decorating the bar. */
 .voice-person[data-speaking="true"] {
-  border-color: var(--color-success);
+  border-color: color-mix(in srgb, var(--color-success) 70%, transparent);
   color: var(--color-text);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 22%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-success) 14%, transparent);
+}
+
+.voice-level {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  width: 0;
+  height: 12px;
+  opacity: 0;
+  overflow: hidden;
+  transition: width 160ms var(--ease-out), opacity 160ms var(--ease-out);
+}
+
+.voice-person[data-speaking="true"] .voice-level {
+  width: 14px;
+  opacity: 1;
+}
+
+.voice-level i {
+  width: 2px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--color-success);
+}
+
+/* Scale only, so the meter never asks the browser for a layout pass. The three
+   durations are deliberately unrelated: matched bars read as a loading bar. */
+.voice-person[data-speaking="true"] .voice-level i {
+  animation: voice-level 760ms var(--ease-in-out) infinite;
+}
+
+.voice-person[data-speaking="true"] .voice-level i:nth-child(2) { animation-duration: 540ms; }
+.voice-person[data-speaking="true"] .voice-level i:nth-child(3) { animation-duration: 900ms; }
+
+.voice-person[data-muted="true"] .voice-level {
+  width: 0;
+  opacity: 0;
+}
+
+@keyframes voice-level {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(2.6); }
 }
 
 .voice-person[data-speaking="true"] .voice-avatar {
@@ -2539,5 +2585,93 @@ code, .mono {
 
   .voice-person:hover .voice-avatar {
     border-color: var(--color-border-strong);
+  }
+}
+
+
+/* Four dotted brackets, one per corner. On a wide screen the content column
+   floats in the middle of nothing; the brackets give it an edge to sit inside
+   and push the eye back to the middle. A phone has no room to give away, so it
+   never sees them. */
+.page-frame {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .page-frame {
+    display: block;
+    position: fixed;
+    inset: 24px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .page-frame i {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border: 0 dotted var(--color-border-strong);
+  }
+
+  .page-frame i:nth-child(1) { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
+  .page-frame i:nth-child(2) { top: 0; right: 0; border-top-width: 2px; border-right-width: 2px; }
+  .page-frame i:nth-child(3) { bottom: 0; left: 0; border-bottom-width: 2px; border-left-width: 2px; }
+  .page-frame i:nth-child(4) { bottom: 0; right: 0; border-bottom-width: 2px; border-right-width: 2px; }
+
+  /* Room to breathe inside the brackets. */
+  .auth-shell {
+    padding: 80px 40px calc(80px + env(safe-area-inset-bottom));
+  }
+}
+
+/* The way out, from inside a game. Top right, quiet, out of the thumb's way. */
+.room-exit {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  right: 12px;
+  z-index: 45;
+  display: flex;
+  gap: 6px;
+}
+
+@media (min-width: 1024px) {
+  .room-exit {
+    top: 34px;
+    right: 34px;
+  }
+}
+
+.room-exit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1;
+  transition: color 140ms var(--ease-out), border-color 140ms var(--ease-out),
+              transform 140ms var(--ease-out);
+}
+
+.room-exit-btn:hover:not(:disabled) {
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.room-exit-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.room-exit-btn:disabled {
+  color: var(--color-text-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voice-person[data-speaking="true"] .voice-level i {
+    animation: none;
+    height: 9px;
   }
 }

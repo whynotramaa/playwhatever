@@ -323,6 +323,55 @@ export const close = mutation({
   },
 });
 
+/**
+ * The host stops a game that is under way. The session, its rounds and their
+ * submissions go, scores go back to zero, and the room drops to the lobby
+ * where the same players can start again without rejoining. Closing the room
+ * is the other button: that one ends the evening.
+ */
+export const endGame = mutation({
+  args: { roomId: v.id("rooms") },
+  returns: v.null(),
+  handler: async (ctx, { roomId }) => {
+    const user = await currentUser(ctx);
+    const room = await ctx.db.get(roomId);
+    if (!room || room.status === "closed") throw new ConvexError("That room does not exist.");
+    if (room.hostUserId !== user._id) throw new ConvexError("Only the host can end the game.");
+
+    const sessions = await ctx.db
+      .query("gameSessions")
+      .withIndex("by_roomId", (q) => q.eq("roomId", roomId))
+      .collect();
+    for (const session of sessions) {
+      const rounds = await ctx.db
+        .query("rounds")
+        .withIndex("by_sessionId", (q) => q.eq("sessionId", session._id))
+        .collect();
+      for (const round of rounds) {
+        const submissions = await ctx.db
+          .query("submissions")
+          .withIndex("by_roundId", (q) => q.eq("roundId", round._id))
+          .collect();
+        for (const submission of submissions) await ctx.db.delete(submission._id);
+        await ctx.db.delete(round._id);
+      }
+      await ctx.db.delete(session._id);
+    }
+
+    // A fresh game on the same room starts everyone level.
+    const players = await ctx.db
+      .query("roomPlayers")
+      .withIndex("by_roomId", (q) => q.eq("roomId", roomId))
+      .take(MAX_ROOM_PLAYERS);
+    for (const player of players) {
+      if (player.score !== 0) await ctx.db.patch(player._id, { score: 0 });
+    }
+
+    await ctx.db.patch(roomId, { status: "waiting" });
+    return null;
+  },
+});
+
 export const startGame = mutation({
   args: { roomId: v.id("rooms") },
   returns: v.any(),

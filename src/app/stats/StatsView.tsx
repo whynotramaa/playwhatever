@@ -33,7 +33,7 @@ export function StatsView() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 max-w-3xl w-full mx-auto px-5 py-12 flex flex-col gap-10">
+      <main className="flex-1 max-w-3xl w-full mx-auto px-5 py-12 lg:px-10 lg:py-16 flex flex-col gap-10">
         <header className="flex flex-col gap-2">
           <h1 className="display">Stats</h1>
           <p className="body text-[var(--color-text-secondary)]">

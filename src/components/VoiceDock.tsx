@@ -38,6 +38,7 @@ export function VoiceDock({ roomId }: { roomId: string }) {
               >
                 <span className="voice-avatar" aria-hidden="true">{initials(player.displayName)}</span>
                 <span className="voice-name">{isMe ? "You" : player.displayName}</span>
+                <span className="voice-level" aria-hidden="true"><i /><i /><i /></span>
                 {player.micMuted === true && <MicOff className="voice-glyph" aria-label="muted" />}
               </span>
             );

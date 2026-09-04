@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import type { Id } from "../../../../../../convex/_generated/dataModel";
@@ -22,6 +24,16 @@ const SCREENS: Record<string, (props: { roomId: string; sessionId: string }) => 
 
 export function PlayRouter({ roomId, sessionId }: { roomId: string; sessionId: string }) {
   const data = useQuery(api.rooms.get, { roomId: roomId as Id<"rooms"> });
+  const router = useRouter();
+  const status = data === null ? "closed" : data?.room.status;
+
+  useEffect(() => {
+    // The host ended the game, or closed the room. Either way this screen is
+    // no longer the room, and the lobby knows what to say about both.
+    if (status && status !== "in_progress" && status !== "finished") {
+      router.replace(`/rooms/${roomId}`);
+    }
+  }, [status, roomId, router]);
 
   if (data === undefined) return <AuthShell title="Loading the table"><div className="auth-skeleton" /></AuthShell>;
   const Screen = data?.game ? SCREENS[data.game.slug] : undefined;

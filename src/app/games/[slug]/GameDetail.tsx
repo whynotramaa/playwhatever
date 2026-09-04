@@ -53,6 +53,7 @@ export function GameDetail({ slug }: { slug: string }) {
 
             <div className="flex flex-wrap gap-3">
               <Link href={`/games/${game.slug}/create`}><Button variant="primary">Host a room</Button></Link>
+              <Link href={`/blog/${game.slug}`} className="small underline self-center">Read the rules</Link>
               <Link href="/join"><Button variant="secondary">Join with a code</Button></Link>
             </div>
           </>

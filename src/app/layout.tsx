@@ -18,6 +18,7 @@ export const metadata: Metadata = {
     siteName: "PlayWhatever",
     type: "website",
   },
+  alternates: { canonical: "/" },
   twitter: { card: "summary_large_image" },
 };
 

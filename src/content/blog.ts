@@ -151,6 +151,40 @@ export const POSTS: Post[] = [
     ],
   },
   {
+    slug: "make-your-team",
+    gameSlug: "make-your-team",
+    title: "Make Your Team rules",
+    description:
+      "Everyone gets the same purse. Lots come up one at a time, the room bids in turn order, and the squads are ranked at the end.",
+    players: "2 to 8 players",
+    genre: "Auction",
+    art: "/game-art/make-your-team.webp",
+    sections: [
+      {
+        heading: "What the game is",
+        body: "The host picks a pool, cricketers or footballers or film stars or characters or movies, and hands everyone the same budget. Names come up one at a time and the room bids for them. What you end up with is your squad, and at the end the squads are ranked into tiers.",
+      },
+      {
+        heading: "How a lot runs",
+        steps: [
+          "A name comes up. The bid starts at zero and a different player opens each lot.",
+          "On your turn you raise by 1 to 6 rupees on the keypad, or you leave the bid.",
+          "Leaving is final for that lot. You cannot come back to it.",
+          "Twenty seconds to act. Silence counts as leaving, so the auction never stalls.",
+          "When everyone else has walked away, the lot goes to the last bidder at their own bid and the money leaves their purse.",
+        ],
+      },
+      {
+        heading: "Money",
+        body: "You can never bid more than you hold, and the auctioneer skips anyone who cannot cover the next rupee. Spend everything on the first three names and you watch the rest of the auction. A lot nobody bids on goes unsold and the game moves on.",
+      },
+      {
+        heading: "How it is scored",
+        body: "Every name carries a hidden rating, and a squad scores the sum of its ratings. Money left in the purse is worth nothing, so hoarding only costs you. The best squad in the room sets the top of the table and everyone else is cut into S, A, B and C against it. The tier list saves as an image, sized for a story.",
+      },
+    ],
+  },
+  {
     slug: "player-of-the-day",
     gameSlug: null,
     title: "Player of the Day rules",

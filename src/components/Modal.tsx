@@ -71,3 +71,46 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
     </div>
   );
 }
+
+/**
+ * Ask before something that cannot be taken back. The platform's own
+ * `window.confirm` is a system alert with a system font and system buttons on
+ * top of a page that has spent a lot of effort not looking like that, and on
+ * a phone it is the one piece of the product a host cannot recognise.
+ *
+ * The destructive answer is the primary button because it is the thing the
+ * person came here to do; backing out is the quiet one next to it.
+ */
+export function ConfirmDialog({
+  isOpen,
+  title,
+  body,
+  confirmLabel,
+  cancelLabel = "Never mind",
+  isPending,
+  onConfirm,
+  onClose,
+}: {
+  isOpen: boolean;
+  title: string;
+  body: string;
+  confirmLabel: string;
+  cancelLabel?: string;
+  isPending?: boolean;
+  onConfirm: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={title}>
+      <p className="body text-[var(--color-text-secondary)]">{body}</p>
+      <div className="confirm-actions">
+        <button type="button" className="btn btn-primary" disabled={isPending} onClick={onConfirm}>
+          <span className="btn-label">{confirmLabel}</span>
+        </button>
+        <button type="button" className="btn btn-outline" disabled={isPending} onClick={onClose}>
+          <span className="btn-label">{cancelLabel}</span>
+        </button>
+      </div>
+    </Modal>
+  );
+}

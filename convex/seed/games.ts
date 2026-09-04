@@ -78,4 +78,19 @@ export const GAMES: GameSeed[] = [
     isPublished: true,
     sortOrder: 2,
   },
+  {
+    slug: "make-your-team",
+    mark: "\ud83e\uddfe",
+    name: "Make Your Team",
+    shortDescription: "One purse each. Outbid the room, then find out what you bought.",
+    longDescription:
+      "The host picks a pool and hands everyone the same budget. Lots come up one at a time and the room bids in turn order until only one bidder is left. Spend it all early and you watch the rest of the auction. At the end the squads are scored and ranked into tiers.",
+    playerMin: 2,
+    playerMax: 8,
+    estimatedMinutes: 18,
+    categories: ["Popular", "Auction", "Indian", "Global"],
+    accentColor: "#fff36a",
+    isPublished: true,
+    sortOrder: 4,
+  },
 ];

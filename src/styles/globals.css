@@ -2624,19 +2624,21 @@ code, .mono {
   }
 }
 
-/* The way out, from inside a game. Top right, quiet, out of the thumb's way. */
+/* The way out, from inside a game. Top right, quiet, out of the thumb's way,
+   but still a control: 44px of target, a label beside the icon, and enough
+   contrast to be read against a game screen rather than guessed at. */
 .room-exit {
   position: fixed;
-  top: calc(12px + env(safe-area-inset-top));
+  top: calc(10px + env(safe-area-inset-top));
   right: 12px;
   z-index: 45;
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 @media (min-width: 1024px) {
   .room-exit {
-    top: 34px;
+    top: 30px;
     right: 34px;
   }
 }
@@ -2644,29 +2646,114 @@ code, .mono {
 .room-exit-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  font-size: 12px;
-  line-height: 1;
-  transition: color 140ms var(--ease-out), border-color 140ms var(--ease-out),
-              transform 140ms var(--ease-out);
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: 600 14px/1 var(--font-ui);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out),
+              color 160ms var(--ease-out), transform 140ms var(--ease-out);
 }
 
-.room-exit-btn:hover:not(:disabled) {
-  color: var(--color-text);
-  border-color: var(--color-border-strong);
+/* Leaving is the smaller decision of the two, so it is the quieter button. */
+.room-exit-btn.is-quiet {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
 }
 
 .room-exit-btn:active:not(:disabled) {
   transform: scale(0.97);
 }
 
+.room-exit-btn:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
 .room-exit-btn:disabled {
   color: var(--color-text-disabled);
+  box-shadow: none;
+}
+
+@media (hover: hover) {
+  .room-exit-btn:not(:disabled):hover {
+    background: var(--color-coral);
+    border-color: var(--color-coral);
+    color: #fff;
+  }
+  .room-exit-btn.is-quiet:not(:disabled):hover {
+    background: var(--color-surface-soft);
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+}
+
+/* A phone has no width to spend on two labelled buttons above a live game. */
+@media (max-width: 520px) {
+  .room-exit-btn {
+    padding: 0;
+    width: 44px;
+  }
+  .room-exit-btn span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+/* The two answers to a dialog. Destructive first, because it is what the
+   person opened the dialog to do. Stacked on a phone, per section 19. */
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.confirm-actions .btn {
+  flex: 1;
+}
+
+@media (max-width: 480px) {
+  .confirm-actions {
+    flex-direction: column-reverse;
+  }
+}
+
+/* A link that is a footnote rather than an action. Section 9 tertiary, minus
+   the button shape: it sits under a row of real buttons and must not read as
+   a fourth one. */
+.quiet-link {
+  align-self: flex-start;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.35;
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-strong);
+  text-underline-offset: 4px;
+  border-radius: var(--radius-small);
+  transition: color 160ms var(--ease-out), text-decoration-color 160ms var(--ease-out);
+}
+
+.quiet-link:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .quiet-link:hover {
+    color: var(--color-text-secondary);
+    text-decoration-color: var(--color-text-muted);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2703,4 +2790,354 @@ code, .mono {
   width: 100%;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-panel);
+}
+
+/* Make Your Team
+   An auction is two numbers and a decision. The screen is built around that
+   order: what it costs, what you have, and the six ways to say more. */
+.bid-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+.bid-amount {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-yellow);
+}
+
+.bid-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  text-align: right;
+}
+
+.bid-clock[data-low="true"] .code-type {
+  color: var(--color-coral);
+}
+
+/* The keypad. Two rows of three, every key a 44px target with room to spare,
+   because this is the only control in the game and it gets hit under a clock. */
+.bid-pad-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bid-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.bid-key {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  min-height: 72px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out), border-color 140ms var(--ease-out),
+              color 140ms var(--ease-out), transform 120ms var(--ease-out);
+}
+
+.bid-key-plus {
+  font: 600 18px/1 var(--font-ui);
+  color: var(--color-text-muted);
+}
+
+.bid-key-num {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.bid-key:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.bid-key:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+.bid-key:disabled {
+  color: var(--color-text-disabled);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  cursor: not-allowed;
+}
+
+.bid-key:disabled .bid-key-plus {
+  color: var(--color-text-disabled);
+}
+
+@media (hover: hover) {
+  .bid-key:not(:disabled):hover {
+    background: var(--color-coral);
+    border-color: var(--color-coral);
+    color: #fff;
+  }
+  .bid-key:not(:disabled):hover .bid-key-plus {
+    color: rgba(255, 255, 255, 0.72);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bid-key,
+  .room-exit-btn {
+    transition: none;
+  }
+}
+
+/* The room, mid-auction. A row is a purse and a count; the turn gets an edge
+   rather than a colour, because colour alone is not a state (section 18). */
+.bidder-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 12px;
+  border-left: 3px solid transparent;
+  border-radius: var(--radius-small);
+}
+
+.bidder-row[data-turn="true"] {
+  border-left-color: var(--color-coral);
+  background: var(--color-surface-soft);
+}
+
+.bidder-row[data-out="true"] {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--color-border-strong);
+}
+
+.bidder-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+}
+
+.bidder-meta {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* Sold. A stamp, angled once, on a card that is deliberately not a ticket:
+   the ticket is the invitation and this is a receipt. */
+.lot-sold {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 32px 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+  text-align: center;
+  overflow: hidden;
+}
+
+.lot-stamp {
+  align-self: center;
+  padding: 4px 16px;
+  border: 2px solid var(--color-success);
+  border-radius: var(--radius-small);
+  color: var(--color-success);
+  font: 700 14px/1.4 var(--font-ui);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+
+.lot-sold[data-unsold="true"] .lot-stamp {
+  border-color: var(--color-text-muted);
+  color: var(--color-text-muted);
+}
+
+.lot-sold-name {
+  font-size: 40px;
+  line-height: 1.05;
+}
+
+.lot-sold-line {
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+.squad-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.squad-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+}
+
+.squad-chip b {
+  color: var(--color-yellow);
+}
+
+.squad-chip.is-empty {
+  color: var(--color-text-muted);
+}
+
+/* The tier list. The one thing anybody screenshots, so it gets the accent
+   colour and the rest of the results screen stays neutral behind it. */
+.tier-board {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tier-board-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tier-row {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--tier);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.tier-badge {
+  flex: none;
+  width: 40px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  font-size: 34px;
+  line-height: 1.1;
+  color: var(--tier);
+}
+
+.tier-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  flex: 1;
+}
+
+.tier-entry-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 2px;
+}
+
+.tier-entry-head .code-type {
+  color: var(--tier);
+}
+
+.tier-entry .squad-list {
+  margin-top: 10px;
+}
+
+/* Host's pool picker. A row that opens a dialog, so it has to look pressable
+   without looking like the form's primary action. */
+.picker-row,
+.picker-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+
+.picker-row > span:first-child,
+.picker-option > span:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.picker-value {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.picker-change {
+  flex: none;
+  color: var(--color-coral);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.picker-row:focus-visible,
+.picker-option:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 3px;
+}
+
+.picker-option[data-selected="true"] {
+  border-color: var(--color-coral);
+  color: var(--color-coral);
+}
+
+.picker-option[data-selected="true"] .small {
+  color: var(--color-text-secondary);
+}
+
+.picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (hover: hover) {
+  .picker-row:hover,
+  .picker-option:hover {
+    background: var(--color-surface-raised);
+    border-color: var(--color-border-strong);
+  }
 }

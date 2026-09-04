@@ -4,12 +4,13 @@ import { PAIRS } from "./seed/traitors";
 import { QUESTIONS } from "./seed/liar";
 import { PLAYERS } from "./seed/ipl";
 import { WORDS } from "./seed/charades";
+import { SQUADS } from "./seed/team";
 
 /**
  * Idempotent seed. Run with:
  *   npx convex run seed:run
  *
- * Games are matched on slug and patched, because there are six of them and
+ * Games are matched on slug and patched, because there are a handful of them and
  * they are structural. Content is inserted only when a record with the same
  * title does not already exist for that game, so re-running never clobbers an
  * edit somebody made in the dashboard (PLAN.md phase 15).
@@ -51,7 +52,7 @@ export const run = internalMutation({
       seenTitles.set(slug, new Set(rows.map((r) => r.title)));
     }
 
-    for (const item of [...PAIRS, ...QUESTIONS, ...PLAYERS, ...WORDS]) {
+    for (const item of [...PAIRS, ...QUESTIONS, ...PLAYERS, ...WORDS, ...SQUADS]) {
       const gameId = gameIdBySlug.get(item.gameSlug);
       if (!gameId) {
         throw new Error(`Content references unknown game slug: ${item.gameSlug}`);

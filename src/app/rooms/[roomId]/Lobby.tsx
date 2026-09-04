@@ -12,6 +12,7 @@ import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { GuestSessionGate } from "@/components/GuestSessionGate";
 import { InvitationTicket } from "@/components/InvitationTicket";
+import { ConfirmDialog } from "@/components/Modal";
 import { errorText } from "@/lib/errors";
 import { useServerNow } from "@/lib/useServerNow";
 
@@ -36,6 +37,7 @@ function LobbyContent({ roomId }: { roomId: Id<"rooms"> }) {
   const [pending, setPending] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmClose, setConfirmClose] = useState(false);
 
   useEffect(() => {
     // Reconnecting mid-game, or after it ended, lands on the right screen.
@@ -138,7 +140,16 @@ function LobbyContent({ roomId }: { roomId: Id<"rooms"> }) {
         {isHost ? (
           <>
             <Button variant="primary" isBlock isLoading={pending} data-tip={canStart ? "Nobody can join once it starts" : "Waiting on more players"} disabled={!canStart} onClick={() => void guard(() => start({ roomId }))}>{canStart ? "Start game" : `Need ${data.game?.playerMin ?? 3} players`}</Button>
-            <Button variant="tertiary" isBlock onClick={() => { if (window.confirm("Close this room for everyone?")) void guard(() => closeRoom({ roomId }).then(() => router.push("/"))); }}>Close room</Button>
+            <Button variant="tertiary" isBlock onClick={() => setConfirmClose(true)}>Close room</Button>
+            <ConfirmDialog
+              isOpen={confirmClose}
+              title="Close the room"
+              body="The code stops working and everyone still in it is sent back to the shelf. This one does not come back."
+              confirmLabel="Close it"
+              isPending={pending}
+              onConfirm={() => void guard(() => closeRoom({ roomId }).then(() => router.push("/")))}
+              onClose={() => setConfirmClose(false)}
+            />
           </>
         ) : (
           <>

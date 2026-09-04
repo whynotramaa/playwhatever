@@ -147,7 +147,6 @@ export function IplGuessBox({
         placeholder="start typing a name"
         autoComplete="off"
         maxLength={40}
-        autoFocus
       />
       {suggestions.length > 0 && (
         <div className="ipl-suggest">

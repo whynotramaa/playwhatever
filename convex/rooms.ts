@@ -6,6 +6,8 @@ import { startSession as startTraitors } from "./traitors";
 import { startSession as startLiar } from "./liar";
 import { startSession as startIpl } from "./ipl";
 import { startSession as startCharades } from "./charades";
+import { startSession as startTeam } from "./team";
+import { BUDGET_MAX, BUDGET_MIN, DEFAULT_BUDGET, DEFAULT_CATEGORY, POOL_MAX, POOL_MIN, TEAM_CATEGORIES } from "./teamRules";
 
 /**
  * The one door into a game. Every module gets the same guarantees: the caller
@@ -19,6 +21,7 @@ const STARTERS: Record<string, GameStarter> = {
   "guess-the-liar": startLiar,
   "ipl-guessr": startIpl,
   "dumb-charadess": startCharades,
+  "make-your-team": startTeam,
 };
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -120,6 +123,12 @@ function cleanSettings(slug: string, raw: Record<string, unknown> | undefined) {
     settings.rounds = clamp(raw?.rounds, 5, 1, 20);
     settings.timerSeconds = clamp(raw?.timerSeconds, 120, 30, 180);
   }
+  if (slug === "make-your-team") {
+    const wanted = String(raw?.category ?? DEFAULT_CATEGORY);
+    settings.category = TEAM_CATEGORIES.some((entry) => entry.key === wanted) ? wanted : DEFAULT_CATEGORY;
+    settings.budget = clamp(raw?.budget, DEFAULT_BUDGET, BUDGET_MIN, BUDGET_MAX);
+    settings.pool = clamp(raw?.pool, 12, POOL_MIN, POOL_MAX);
+  }
   if (slug === "dumb-charadess") {
     // No round count: everybody guesses once, so the players are the rounds.
     // Seconds here are one clue-giver's turn, not the whole round.
@@ -139,9 +148,6 @@ export const create = mutation({
   returns: v.any(),
   handler: async (ctx, args) => {
     const user = await currentUser(ctx);
-    // Guests play, accounts host. The room outlives the tab it was made in, so
-    // it needs an owner who can come back to it.
-    if (user.isAnonymous) throw new ConvexError("Sign in to host a room. Guests can still join with a code.");
     const game = await ctx.db
       .query("games")
       .withIndex("by_slug", (q) => q.eq("slug", args.gameSlug))
@@ -149,6 +155,12 @@ export const create = mutation({
     if (!game?.isPublished) throw new ConvexError("That game is not available yet.");
 
     const maxPlayers = Math.floor(args.maxPlayers ?? game.playerMax);
+    // Guests play, accounts host. The room outlives the tab it was made in, so
+    // it needs an owner who can come back to it. A one-seat room outlives
+    // nothing and has nobody to invite, so a guest can open one.
+    if (user.isAnonymous && maxPlayers > 1) {
+      throw new ConvexError("Sign in to host a room. Guests can still join with a code.");
+    }
     if (maxPlayers < game.playerMin || maxPlayers > Math.min(game.playerMax, MAX_ROOM_PLAYERS)) {
       throw new ConvexError(`Choose between ${game.playerMin} and ${Math.min(game.playerMax, MAX_ROOM_PLAYERS)} players.`);
     }

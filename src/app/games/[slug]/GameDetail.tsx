@@ -6,7 +6,8 @@ import { api } from "../../../../convex/_generated/api";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
-import { genreLabel } from "@/lib/games";
+import { artFor, genreLabel, hasSolo } from "@/lib/games";
+import { SoloButton } from "@/components/SoloButton";
 
 export function GameDetail({ slug }: { slug: string }) {
   const game = useQuery(api.games.getBySlug, { slug });
@@ -28,7 +29,7 @@ export function GameDetail({ slug }: { slug: string }) {
         ) : (
           <>
             <div className="game-detail-art" style={{ background: game.accentColor }}>
-              <img src={`/game-art/${game.slug === "ipl-guessr" ? "ipl-guessr-v2" : game.slug}.webp`} alt="" onError={(event) => { event.currentTarget.style.display = "none"; }} />
+              <img src={artFor(game.slug)} alt="" onError={(event) => { event.currentTarget.style.display = "none"; }} />
             </div>
             <div className="flex items-center gap-4">
               <div>
@@ -53,9 +54,13 @@ export function GameDetail({ slug }: { slug: string }) {
 
             <div className="flex flex-wrap gap-3">
               <Link href={`/games/${game.slug}/create`}><Button variant="primary">Host a room</Button></Link>
-              <Link href={`/blog/${game.slug}`} className="small underline self-center">Read the rules</Link>
+              {hasSolo(game) && <SoloButton slug={game.slug} />}
               <Link href="/join"><Button variant="secondary">Join with a code</Button></Link>
             </div>
+
+            {/* The rules are a footnote, not a fourth action competing with
+                the three above it. */}
+            <Link href={`/blog/${game.slug}`} className="quiet-link">Read the rules</Link>
           </>
         )}
       </main>

@@ -10,6 +10,7 @@ import { PlayScreen } from "./PlayScreen";
 import { LiarScreen } from "./LiarScreen";
 import { IplScreen } from "./IplScreen";
 import { CharadesScreen } from "./CharadesScreen";
+import { TeamScreen } from "./TeamScreen";
 
 /**
  * The room knows which game it is; the platform picks the screen. A new game
@@ -20,6 +21,7 @@ const SCREENS: Record<string, (props: { roomId: string; sessionId: string }) => 
   "guess-the-liar": LiarScreen,
   "ipl-guessr": IplScreen,
   "dumb-charadess": CharadesScreen,
+  "make-your-team": TeamScreen,
 };
 
 export function PlayRouter({ roomId, sessionId }: { roomId: string; sessionId: string }) {

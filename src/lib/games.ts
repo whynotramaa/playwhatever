@@ -15,7 +15,18 @@ export function genreLabel(categories: string[]) {
   return categories.find((name) => !SHARED_TAGS.has(name)) ?? categories[0] ?? "Party";
 }
 
-export type SettingKey = "rounds" | "adult" | "timer" | "tries";
+/**
+ * A game's cover art. `ipl-guessr` was re-shot and the old file is still on
+ * disk, so the exception lives here rather than being spelled out at each of
+ * the three call sites that need a path.
+ */
+export const artFor = (slug: string) =>
+  `/game-art/${slug === "ipl-guessr" ? "ipl-guessr-v2" : slug}.webp`;
+
+/** A game one person can sit down and play on their own, with no room to fill. */
+export const hasSolo = (game: { playerMin: number }) => game.playerMin <= 1;
+
+export type SettingKey = "rounds" | "adult" | "timer" | "tries" | "budget" | "pool" | "category";
 
 /**
  * The settings each game supports. Mirrored by `cleanSettings` in
@@ -29,6 +40,9 @@ export const GAME_SETTINGS: Record<string, SettingKey[]> = {
   "ipl-guessr": ["rounds", "timer"],
   // No rounds dial: the chair goes round the table once, so players set it.
   "dumb-charadess": ["timer", "tries"],
+  // The pool is picked in a dialog, because five named choices with a line of
+  // explanation each is not a form field.
+  "make-your-team": ["category", "budget", "pool"],
 };
 
 export const settingsFor = (slug: string) => GAME_SETTINGS[slug] ?? [];

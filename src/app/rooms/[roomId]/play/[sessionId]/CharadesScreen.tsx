@@ -152,7 +152,6 @@ function Charades({ roomId, sessionId }: { roomId: Id<"rooms">; sessionId: Id<"g
                 placeholder="Type it out"
                 maxLength={60}
                 autoComplete="off"
-                autoFocus
               />
               <Button type="submit" variant="primary" isBlock isLoading={pending} disabled={!draft.trim()}>
                 Send guess

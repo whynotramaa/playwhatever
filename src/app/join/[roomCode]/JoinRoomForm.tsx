@@ -77,7 +77,6 @@ function JoinRoom({ initialCode }: { initialCode: string }) {
               placeholder="banana"
               maxLength={24}
               required
-              autoFocus
             />
             {hint && !error && <p className="auth-note">{hint}</p>}
             {error && <p className="auth-note" role="alert"><span className="is-error">{error}</span></p>}
@@ -99,7 +98,6 @@ function JoinRoom({ initialCode }: { initialCode: string }) {
               maxLength={ROOM_CODE_LENGTH}
               autoComplete="off"
               required
-              autoFocus
             />
             <p className="auth-note">Six characters, from whoever is hosting.</p>
           </>

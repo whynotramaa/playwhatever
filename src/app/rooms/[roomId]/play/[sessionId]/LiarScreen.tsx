@@ -133,7 +133,6 @@ function Liar({ roomId, sessionId }: { roomId: Id<"rooms">; sessionId: Id<"gameS
                 onChange={(event) => setDraft(event.target.value)}
                 placeholder="keep it short"
                 maxLength={120}
-                autoFocus
               />
               <Button type="submit" variant="primary" isBlock isLoading={pending} disabled={!draft.trim()}>Lock it in</Button>
             </form>

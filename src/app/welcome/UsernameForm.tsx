@@ -54,6 +54,11 @@ function Picker() {
     if (profile?.username) router.replace("/");
   }, [profile, router]);
 
+  // And they should not see it for the frame before that redirect lands
+  // either. Until the profile has come back there is no way to know whether
+  // this screen is owed to them, so it stays a skeleton.
+  const settling = profile === undefined || Boolean(profile?.username);
+
   useEffect(() => {
     const timer = setTimeout(() => setDebounced(raw), 350);
     return () => clearTimeout(timer);
@@ -103,6 +108,17 @@ function Picker() {
             ? { tone: "error" as const, text: "Taken. Try another." }
             : { tone: "muted" as const, text: "Letters, numbers, and underscores." };
 
+  if (settling) {
+    return (
+      <AuthShell title="One moment">
+        <div className="auth-stack" aria-busy="true">
+          <div className="auth-skeleton" />
+          <div className="auth-skeleton is-short" />
+        </div>
+      </AuthShell>
+    );
+  }
+
   return (
     <AuthShell
       title="Pick a username"
@@ -127,7 +143,6 @@ function Picker() {
               autoComplete="off"
               autoCapitalize="none"
               spellCheck={false}
-              autoFocus
               aria-describedby="username-status"
             />
             <span className="auth-handle-status" aria-hidden="true">

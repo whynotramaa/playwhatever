@@ -79,7 +79,6 @@ export function OtpInput({
         pattern="[0-9]*"
         maxLength={length}
         aria-label={label}
-        autoFocus
       />
 
       {digits.map((digit, i) => (

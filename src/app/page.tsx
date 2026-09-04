@@ -10,7 +10,7 @@ import { Button } from "@/components/Button";
 import { GameCard } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { ArrowRight, Search, Trophy } from "lucide-react";
-import { ROOM_CODE_LENGTH, normalizeRoomCode, regionLabel } from "@/lib/games";
+import { ROOM_CODE_LENGTH, genreLabel, normalizeRoomCode } from "@/lib/games";
 
 type Game = {
   _id: string;
@@ -133,8 +133,7 @@ export default function Home() {
                     title={game.name}
                     description={game.shortDescription}
                     playerCount={`${game.playerMin}\u2013${game.playerMax} players`}
-                    duration={`${game.estimatedMinutes} min`}
-                    region={regionLabel(game.categories)}
+                    genre={genreLabel(game.categories)}
                     artwork={`/game-art/${game.slug === "ipl-guessr" ? "ipl-guessr-v2" : game.slug}.webp`}
                     onClick={() => router.push(`/games/${game.slug}`)}
                   />

@@ -7,6 +7,7 @@ import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { AuthShell } from "@/components/AuthShell";
 import { BackLink } from "@/components/BackLink";
+import { genreLabel } from "@/lib/games";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { GuestSessionGate } from "@/components/GuestSessionGate";
@@ -103,8 +104,8 @@ function LobbyContent({ roomId }: { roomId: Id<"rooms"> }) {
           <Card variant="flat" data-tone="lavender">
             <div className="flex items-center justify-between mb-3">
               <span className="label">How it plays</span>
-              <span className="small muted" data-tip="Room size and a rough length">
-                {data.game.playerMin}-{data.game.playerMax} · {data.game.estimatedMinutes} mins
+              <span className="small muted" data-tip="Room size and what the game asks of it">
+                {data.game.playerMin}-{data.game.playerMax} · {genreLabel(data.game.categories)}
               </span>
             </div>
             <p className="text-sm text-[var(--color-text-secondary)]">{data.game.longDescription}</p>

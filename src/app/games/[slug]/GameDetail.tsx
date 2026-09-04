@@ -6,7 +6,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
-import { regionLabel } from "@/lib/games";
+import { genreLabel } from "@/lib/games";
 
 export function GameDetail({ slug }: { slug: string }) {
   const game = useQuery(api.games.getBySlug, { slug });
@@ -34,7 +34,7 @@ export function GameDetail({ slug }: { slug: string }) {
               <div>
                 <h1 className="page-title">{game.name}</h1>
                 <p className="small muted">
-                  {game.playerMin}-{game.playerMax} players · {game.estimatedMinutes} mins · {regionLabel(game.categories)}
+                  {game.playerMin}-{game.playerMax} players · {genreLabel(game.categories)}
                 </p>
               </div>
             </div>

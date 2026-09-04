@@ -28,7 +28,7 @@ Card.displayName = "Card";
 
 /**
  * A game on the shelf. DESIGN.md section 8: artwork, title, one sentence, then
- * players, length and region, with an arrow for the action.
+ * players and what the game asks of them, with an arrow for the action.
  *
  * The artwork is the card's one tinted block, so the shell stays on surface
  * tokens. Six cards each printed on their own accent would put six accents on
@@ -38,13 +38,12 @@ export interface GameCardProps extends HTMLAttributes<HTMLButtonElement> {
   title: string;
   description: string;
   playerCount: string;
-  duration: string;
-  region: string;
+  genre: string;
   artwork?: string;
 }
 
 export const GameCard = forwardRef<HTMLButtonElement, GameCardProps>(
-  ({ title, description, playerCount, duration, region, artwork, className, ...props }, ref) => {
+  ({ title, description, playerCount, genre, artwork, className, ...props }, ref) => {
     return (
       <button ref={ref} type="button" className={clsx("game-card", className)} {...props}>
         <span className="game-card-art" aria-hidden="true">
@@ -58,9 +57,7 @@ export const GameCard = forwardRef<HTMLButtonElement, GameCardProps>(
           <span className="meta">
             <span>{playerCount}</span>
             <span className="sep">·</span>
-            <span>{duration}</span>
-            <span className="sep">·</span>
-            <span>{region}</span>
+            <span>{genre}</span>
             <ArrowRight className="arrow" aria-hidden="true" />
           </span>
         </span>

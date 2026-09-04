@@ -4,12 +4,15 @@ export const normalizeRoomCode = (value: string) =>
 
 export const ROOM_CODE_LENGTH = 6;
 
-/** Games carry categories, not a region field. This reads one off the other. */
-export function regionLabel(categories: string[]) {
-  const indian = categories.includes("Indian");
-  const global = categories.includes("Global");
-  if (indian && global) return "India & Global";
-  return indian ? "India" : global ? "Global" : categories[0] ?? "Party";
+/**
+ * The one tag that says what a game actually is. Every game carries "Popular"
+ * and "Indian", and "Quick games" only repeats the clock, so none of those
+ * tells you anything on a card.
+ */
+const SHARED_TAGS = new Set(["Popular", "Indian", "Global", "Quick games"]);
+
+export function genreLabel(categories: string[]) {
+  return categories.find((name) => !SHARED_TAGS.has(name)) ?? categories[0] ?? "Party";
 }
 
 export type SettingKey = "rounds" | "adult" | "timer" | "tries";

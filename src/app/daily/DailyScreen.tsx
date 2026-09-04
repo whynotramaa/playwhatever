@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { AuthShell } from "@/components/AuthShell";
+import { BackLink } from "@/components/BackLink";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { IplAnswerRow, IplBoard, IplGuessBox, type Guess } from "@/components/IplBoard";
@@ -86,7 +87,10 @@ export function DailyScreen() {
   return (
     <main className="auth-shell">
       <div className="auth-column ipl-game">
-        <span className="daily-mark" aria-hidden="true"><Trophy strokeWidth={1.5} /></span>
+        <div className="auth-top">
+          <BackLink />
+          <span className="daily-mark" aria-hidden="true"><Trophy strokeWidth={1.5} /></span>
+        </div>
         <header className="auth-head">
           <p className="label">Player of the day · {today.dateKey}</p>
           <h1 className="page-title">

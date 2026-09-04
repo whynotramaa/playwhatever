@@ -22,10 +22,10 @@ export function AuthShell({
     <main className="auth-shell">
       <div className="auth-column">
         <div className="auth-top">
+          <BackLink />
           <Link href="/" className="auth-brand" aria-label="PlayWhatever home">
             <span className="auth-brand-mark" aria-hidden="true">*</span>
           </Link>
-          <BackLink />
         </div>
 
         <header className="auth-head">

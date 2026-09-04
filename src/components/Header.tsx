@@ -2,18 +2,21 @@
 
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "./Button";
+import { BackLink } from "./BackLink";
 
 export function Header() {
   const { theme, toggleTheme } = useTheme();
   const { data: session } = authClient.useSession();
   const router = useRouter();
+  // The shelf is where back would go, so it is the one screen without it.
+  const isHome = usePathname() === "/";
   // A guest session is not an account, so the header still offers the sign-in.
   const account = session?.user && !(session.user as { isAnonymous?: boolean }).isAnonymous ? session.user : null;
   // The handle is what a player is known by in a room. An email address is an
@@ -27,6 +30,8 @@ export function Header() {
         <span className="logo-mark" aria-hidden="true">*</span>
         <span className="logo-word font-normal text-xl tracking-tight heading-display">PlayWhatever</span>
       </Link>
+
+      {!isHome && <BackLink />}
 
       <div className="spacer" />
 

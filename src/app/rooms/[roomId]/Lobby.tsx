@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { AuthShell } from "@/components/AuthShell";
+import { BackLink } from "@/components/BackLink";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { GuestSessionGate } from "@/components/GuestSessionGate";
@@ -78,7 +79,10 @@ function LobbyContent({ roomId }: { roomId: Id<"rooms"> }) {
   return (
     <main className="auth-shell">
       <div className="auth-column">
-        <span className="auth-brand-mark" aria-hidden="true">*</span>
+        <div className="auth-top">
+          <BackLink />
+          <span className="auth-brand-mark" aria-hidden="true">*</span>
+        </div>
         <header className="auth-head"><h1 className="page-title">{data.game?.name ?? "Room"}</h1><p className="auth-sub">Share the ticket. Anyone with the code can walk in.</p></header>
 
         <InvitationTicket

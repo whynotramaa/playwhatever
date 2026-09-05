@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { zarathustra, poppins, notoDevanagari } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/lib/theme";
@@ -40,6 +42,8 @@ export default function RootLayout({
             <span className="page-frame" aria-hidden="true"><i /><i /><i /><i /></span>
             {children}
           </ConvexClientProvider>
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>

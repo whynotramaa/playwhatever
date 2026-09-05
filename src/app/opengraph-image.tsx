@@ -49,8 +49,13 @@ export default async function OpengraphImage() {
           color: "#f7f7ff",
         }}
       >
+        {/* An asterisk sits in the upper half of its em box, so centring the two
+            boxes leaves the mark floating above the wordmark, the same way it
+            did in the header before `.logo-mark` got its nudge. At these sizes
+            the wordmark's cap height centres 23px below the asterisk's ink, so
+            that is what it moves. The transform does not touch layout. */}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <span style={{ fontFamily: "Display", fontSize: 104, lineHeight: 1, color: "#ff6652" }}>*</span>
+          <span style={{ fontFamily: "Display", fontSize: 104, lineHeight: 1, color: "#ff6652", transform: "translateY(23px)" }}>*</span>
           <span style={{ fontFamily: "Display", fontSize: 76, lineHeight: 1 }}>PlayWhatever</span>
         </div>
 

@@ -25,6 +25,9 @@
   --color-yellow-soft: #fff36a;
   --color-yellow-shadow: #c9be00;
   --color-yellow-ink: #363300;
+  /* Yellow as ink. The brand yellow is a fill; on a light surface it has to
+     darken or it disappears (section 18, contrast on yellow surfaces). */
+  --color-yellow-text: var(--color-yellow);
   --color-success: #70d6a0;
   --color-danger: #ff6d73;
   --color-info: #a8baff;
@@ -87,6 +90,7 @@
   --backdrop: rgba(20, 20, 30, 0.36);
   --grain: 0.025;
   --shadow-card: 0 10px 26px rgba(23, 23, 39, 0.09);
+  --color-yellow-text: #7d7300;
 }
 
 *, *::before, *::after {
@@ -399,6 +403,8 @@ code, .mono {
   width: 16px;
   height: 16px;
   border-radius: 50%;
+  inset: 0;
+  margin: auto;
   border: 2px solid currentColor;
   border-top-color: transparent;
   animation: spin 700ms linear infinite;
@@ -1235,7 +1241,7 @@ code, .mono {
   display: grid;
   place-items: center;
   min-height: 84px;
-  color: var(--color-yellow);
+  color: var(--color-yellow-text);
   font-size: 30px;
   line-height: 1;
 }
@@ -2482,6 +2488,41 @@ code, .mono {
   opacity: 0.75;
 }
 
+/* The gavel mark. Inked onto the stub rather than shown beside it, so sold and
+   unsold are the same object in two states. The body gives it room so a long
+   lot name never runs underneath. */
+.movie-ticket-stamp {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  padding: 5px 14px;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  color: var(--ticket-ink);
+  font: 700 15px/1.3 var(--font-ui);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.72;
+  transform: rotate(-7deg);
+  animation: stamp-down 380ms var(--ease-out) both;
+}
+
+.movie-ticket[data-stamped="true"] .movie-ticket-body {
+  padding-right: 122px;
+}
+
+@keyframes stamp-down {
+  from { opacity: 0; transform: rotate(-7deg) scale(1.25); }
+  62%  { opacity: 0.9; transform: rotate(-7deg) scale(0.95); }
+  to   { opacity: 0.72; transform: rotate(-7deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .movie-ticket-stamp {
+    animation: none;
+  }
+}
+
 @media (hover: hover) {
   .movie-ticket:hover {
     transform: rotate(0deg) translateY(-3px);
@@ -2624,9 +2665,9 @@ code, .mono {
   }
 }
 
-/* The way out, from inside a game. Top right, quiet, out of the thumb's way,
-   but still a control: 44px of target, a label beside the icon, and enough
-   contrast to be read against a game screen rather than guessed at. */
+/* The way out, from inside a game. Desktop keeps these quiet in the corner;
+   mobile gets a real action row in the page flow so it cannot cover the title
+   or collide with the voice dock. */
 .room-exit {
   position: fixed;
   top: calc(10px + env(safe-area-inset-top));
@@ -2644,72 +2685,30 @@ code, .mono {
 }
 
 .room-exit-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   min-width: 44px;
-  height: 44px;
-  padding: 0 16px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-control);
-  background: var(--color-surface-raised);
-  color: var(--color-text);
-  font: 600 14px/1 var(--font-ui);
-  cursor: pointer;
+  white-space: nowrap;
   box-shadow: var(--shadow-card);
-  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out),
-              color 160ms var(--ease-out), transform 140ms var(--ease-out);
 }
 
-/* Leaving is the smaller decision of the two, so it is the quieter button. */
-.room-exit-btn.is-quiet {
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border);
-}
-
-.room-exit-btn:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-.room-exit-btn:focus-visible {
-  outline: 2px solid var(--color-coral);
-  outline-offset: 3px;
-}
-
-.room-exit-btn:disabled {
-  color: var(--color-text-disabled);
-  box-shadow: none;
-}
-
-@media (hover: hover) {
-  .room-exit-btn:not(:disabled):hover {
-    background: var(--color-coral);
-    border-color: var(--color-coral);
-    color: #fff;
+@media (max-width: 639px) {
+  /* Keep the controls visible and in normal flow on phones. The equal-width
+     row gives both actions a generous target without hiding their labels. */
+  .room-exit {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    padding: calc(12px + env(safe-area-inset-top)) 20px 0;
   }
-  .room-exit-btn.is-quiet:not(:disabled):hover {
-    background: var(--color-surface-soft);
-    border-color: var(--color-border-strong);
-    color: var(--color-text);
-  }
-}
 
-/* A phone has no width to spend on two labelled buttons above a live game. */
-@media (max-width: 520px) {
   .room-exit-btn {
-    padding: 0;
-    width: 44px;
-  }
-  .room-exit-btn span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
+    flex: 1 1 0;
+    min-width: 0;
+    height: 46px;
+    padding-inline: 12px;
   }
 }
+
 
 /* The two answers to a dialog. Destructive first, because it is what the
    person opened the dialog to do. Stacked on a phone, per section 19. */
@@ -2793,44 +2792,136 @@ code, .mono {
 }
 
 /* Make Your Team
-   An auction is two numbers and a decision. The screen is built around that
-   order: what it costs, what you have, and the six ways to say more. */
-.bid-head {
+   An auction is a physical event: a lot is held up, a number climbs, a stamp
+   comes down. The lot rides the same cinema stub the charades word does, so
+   the thing on screen is an object rather than a heading. Every number here is
+   Poppins, because section 4 keeps Zarathustra off scores and codes. */
+
+/* The board. Bid, clock and purse in one panel instead of three, because a
+   bidder reads all three in the same glance. */
+.bid-board {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  gap: 18px;
   padding: 20px 24px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-panel);
   background: var(--color-surface);
 }
 
+.bid-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .bid-amount {
   margin-top: 6px;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-synthesis: none;
-  font-size: 48px;
-  line-height: 1;
+  font: 800 46px/1 var(--font-ui);
   letter-spacing: -0.03em;
-  color: var(--color-yellow);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-yellow-text);
+}
+
+/* The clock, drawn as a ring that empties. The sweep is a plain custom
+   property the screen already recomputes every tick, so no animation runs. */
+.bid-turn {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 96px;
 }
 
 .bid-clock {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-  text-align: right;
+  --sweep: 1;
+  --ring: var(--color-text-muted);
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: conic-gradient(var(--ring) calc(var(--sweep) * 360deg), var(--color-border) 0);
 }
 
-.bid-clock[data-low="true"] .code-type {
+.bid-clock::before {
+  content: "";
+  grid-area: 1 / 1;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--color-surface);
+}
+
+.bid-seconds {
+  grid-area: 1 / 1;
+  font: 700 24px/1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.bid-clock[data-mine="true"],
+.bid-clock[data-low="true"] {
+  --ring: var(--color-coral);
+}
+
+.bid-clock[data-low="true"] .bid-seconds {
   color: var(--color-coral);
 }
 
+.bid-turn-name {
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* What is left, against what everyone started with. The bar is the fast read;
+   the number is the one you bid against. */
+.bid-purse {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.bid-purse-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bid-purse-num {
+  font: 700 18px/1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.bid-purse-num .muted {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.bid-purse-track {
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-soft);
+  overflow: hidden;
+}
+
+.bid-purse-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-coral);
+  transition: width 300ms var(--ease-out);
+}
+
 /* The keypad. Two rows of three, every key a 44px target with room to spare,
-   because this is the only control in the game and it gets hit under a clock. */
+   because this is the only control in the game and it gets hit under a clock.
+   Grid rather than flex: `align-content` centres the row inside the tall key
+   while `align-items: baseline` still sits the plus on the numeral's baseline.
+   Flex cannot do both at once, which is why the labels used to ride high. */
 .bid-pad-wrap {
   display: flex;
   flex-direction: column;
@@ -2844,14 +2935,17 @@ code, .mono {
 }
 
 .bid-key {
-  display: flex;
-  align-items: baseline;
+  display: grid;
+  grid-auto-flow: column;
+  align-content: center;
   justify-content: center;
-  gap: 2px;
-  min-height: 72px;
+  align-items: baseline;
+  gap: 3px;
+  min-height: 76px;
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-card);
   background: var(--color-surface-raised);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   color: var(--color-text);
   cursor: pointer;
   transition: background-color 140ms var(--ease-out), border-color 140ms var(--ease-out),
@@ -2859,16 +2953,14 @@ code, .mono {
 }
 
 .bid-key-plus {
-  font: 600 18px/1 var(--font-ui);
+  font: 600 16px/1 var(--font-ui);
   color: var(--color-text-muted);
 }
 
 .bid-key-num {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-synthesis: none;
-  font-size: 34px;
-  line-height: 1;
+  font: 700 32px/1 var(--font-ui);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .bid-key:active:not(:disabled) {
@@ -2884,6 +2976,7 @@ code, .mono {
   color: var(--color-text-disabled);
   border-color: var(--color-border);
   background: var(--color-surface);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -2904,6 +2997,7 @@ code, .mono {
 
 @media (prefers-reduced-motion: reduce) {
   .bid-key,
+  .bid-purse-fill,
   .room-exit-btn {
     transition: none;
   }
@@ -2937,6 +3031,7 @@ code, .mono {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
   color: inherit;
 }
 
@@ -2947,46 +3042,23 @@ code, .mono {
   font-size: 14px;
 }
 
-/* Sold. A stamp, angled once, on a card that is deliberately not a ticket:
-   the ticket is the invitation and this is a receipt. */
-.lot-sold {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 32px 24px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-panel);
-  background: var(--color-surface);
-  text-align: center;
-  overflow: hidden;
+.bidder-meta b {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-.lot-stamp {
-  align-self: center;
-  padding: 4px 16px;
-  border: 2px solid var(--color-success);
-  border-radius: var(--radius-small);
-  color: var(--color-success);
-  font: 700 14px/1.4 var(--font-ui);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  transform: rotate(-4deg);
-}
-
-.lot-sold[data-unsold="true"] .lot-stamp {
-  border-color: var(--color-text-muted);
-  color: var(--color-text-muted);
-}
-
-.lot-sold-name {
-  font-size: 40px;
-  line-height: 1.05;
-}
-
+/* The line under a stamped ticket. The stamp says what happened; this says to
+   whom and for how much, and nothing needs a card around it. */
 .lot-sold-line {
+  text-align: center;
   color: var(--color-text-secondary);
   font-size: 15px;
+}
+
+.lot-sold-line b {
+  color: var(--color-text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .squad-list {
@@ -3006,7 +3078,8 @@ code, .mono {
 }
 
 .squad-chip b {
-  color: var(--color-yellow);
+  color: var(--color-yellow-text);
+  font-variant-numeric: tabular-nums;
 }
 
 .squad-chip.is-empty {
@@ -3041,11 +3114,8 @@ code, .mono {
 .tier-badge {
   flex: none;
   width: 40px;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-synthesis: none;
-  font-size: 34px;
-  line-height: 1.1;
+  font: 700 32px/1.15 var(--font-ui);
+  letter-spacing: -0.02em;
   color: var(--tier);
 }
 

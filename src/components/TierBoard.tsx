@@ -136,7 +136,9 @@ async function shareTierCard({ category, tiers }: { category: string; tiers: Gro
     roundRect(g, 80, y, 14, height, 7);
     g.fill();
 
-    g.font = `400 76px ${display}`;
+    // The tier letter is a score badge, so it follows the same Poppins rule the
+    // numbers do rather than borrowing the heading face.
+    g.font = `700 68px ${ui}`;
     g.fillText(tier, 130, y + 84);
 
     g.font = `600 26px ${ui}`;

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { DoorOpen, Square } from "lucide-react";
 import { api } from "../../convex/_generated/api";
+import { Button } from "@/components/Button";
 import type { Id } from "../../convex/_generated/dataModel";
 import { ConfirmDialog } from "@/components/Modal";
 
@@ -12,12 +13,12 @@ type Ask = "end" | "leave" | null;
 
 /**
  * The way out of a room, from inside a game. The lobby has its own buttons in
- * the page; a running game has no chrome to put them in, so they live up in
- * the corner where they are reachable without being in the way.
+ * the page; a running game has no chrome to put them in, so they live in the
+ * corner on desktop and in a small action row above the game on mobile.
  *
- * They are still real controls: 44px of touch target, a label next to the
- * icon, and a dialog in the product's own voice rather than a system alert.
- * On a phone the label collapses and the icon keeps the target.
+ * They are still real controls: brand-sized touch targets, visible labels, and
+ * a dialog in the product's own voice rather than a system alert. On a phone
+ * the actions become an equal-width row above the game instead of covering it.
  */
 export function RoomExit({ roomId }: { roomId: string }) {
   const data = useQuery(api.rooms.get, { roomId: roomId as Id<"rooms"> });
@@ -50,15 +51,15 @@ export function RoomExit({ roomId }: { roomId: string }) {
     <>
       <div className="room-exit">
         {isHost && (
-          <button type="button" className="room-exit-btn" disabled={pending} onClick={() => setAsk("end")}>
+          <Button type="button" variant="primary" className="room-exit-btn" disabled={pending} onClick={() => setAsk("end")}>
             <Square className="w-4 h-4" aria-hidden="true" />
-            <span>End game</span>
-          </button>
+            End game
+          </Button>
         )}
-        <button type="button" className="room-exit-btn is-quiet" disabled={pending} onClick={() => setAsk("leave")}>
+        <Button type="button" variant="outline" className="room-exit-btn" disabled={pending} onClick={() => setAsk("leave")}>
           <DoorOpen className="w-4 h-4" aria-hidden="true" />
-          <span>Leave</span>
-        </button>
+          Leave room
+        </Button>
       </div>
 
       <ConfirmDialog

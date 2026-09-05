@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Moon, Sun } from "lucide-react";
@@ -10,11 +10,14 @@ import { api } from "../../convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "./Button";
 import { BackLink } from "./BackLink";
+import { ConfirmDialog } from "./Modal";
 
 export function Header() {
   const { theme, toggleTheme } = useTheme();
   const { data: session } = authClient.useSession();
   const router = useRouter();
+  const [askSignOut, setAskSignOut] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   // The shelf is where back would go, so it is the one screen without it.
   const isHome = usePathname() === "/";
   // A guest session is not an account, so the header still offers the sign-in.
@@ -53,7 +56,7 @@ export function Header() {
               size="icon"
               aria-label="Sign out"
               data-tip="Sign out"
-              onClick={() => void authClient.signOut().then(() => router.push("/"))}
+              onClick={() => setAskSignOut(true)}
             >
               <LogOut className="w-5 h-5" />
             </Button>
@@ -66,6 +69,20 @@ export function Header() {
           </Link>
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={askSignOut}
+        title="Sign out"
+        body="Your stats and rooms stay put. Sign back in whenever you want them again."
+        confirmLabel="Sign out"
+        cancelLabel="Stay signed in"
+        isPending={signingOut}
+        onConfirm={() => {
+          setSigningOut(true);
+          void authClient.signOut().then(() => router.push("/"));
+        }}
+        onClose={() => setAskSignOut(false)}
+      />
     </header>
   );
 }
